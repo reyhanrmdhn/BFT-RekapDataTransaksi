@@ -126,6 +126,14 @@ class Global_model extends CI_Model
         $query = $this->db->get()->row_array();
         return $query;
     }
+    function get_layananbyID($id)
+    {
+        $this->db->select('*');
+        $this->db->from('layanan');
+        $this->db->where('id_layanan', $id);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
     function get_berita_acara()
     {
         $this->db->select('*');
@@ -582,6 +590,32 @@ class Global_model extends CI_Model
         $this->db->where('layanan_join.id_vendor', $id_vendor);
         $this->db->where('layanan_join.id_layanan', $id_layanan);
         $query = $this->db->get()->row_array();
+        return $query;
+    }
+
+    function crosscheck_inputCustomRate($id_vendor, $id_pelanggan, $id_layanan)
+    {
+        $this->db->select('*');
+        $this->db->from('layanan_join');
+        $this->db->join('vendor', 'layanan_join.id_vendor = vendor.id_vendor');
+        $this->db->join('pelanggan', 'layanan_join.id_pelanggan = pelanggan.id_pelanggan');
+        $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
+        $this->db->where('layanan_join.id_vendor', $id_vendor);
+        $this->db->where('layanan_join.id_pelanggan', $id_pelanggan);
+        $this->db->where('layanan_join.id_layanan', $id_layanan);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+    function get_customRate($id_vendor, $id_layanan)
+    {
+        $this->db->select('*');
+        $this->db->from('layanan_join');
+        $this->db->join('vendor', 'layanan_join.id_vendor = vendor.id_vendor');
+        $this->db->join('pelanggan', 'layanan_join.id_pelanggan = pelanggan.id_pelanggan');
+        $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
+        $this->db->where('layanan_join.id_vendor', $id_vendor);
+        $this->db->where('layanan_join.id_layanan', $id_layanan);
+        $query = $this->db->get()->result_array();
         return $query;
     }
 }

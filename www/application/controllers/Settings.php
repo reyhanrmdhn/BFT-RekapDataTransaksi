@@ -153,16 +153,32 @@ class Settings extends CI_Controller
 
     public function layanan()
     {
-        $data['title'] = 'Layanan';
-        $data['user'] = $this->m_global->get_user();
-        $data['data_layanan'] = $this->m_global->get_layanan();
-        $data['data_vendor'] = $this->m_global->get_vendor();
-        // $data['layananMIN'] = $this->m_global->get_layananMIN();
-        $this->load->view('template/header', $data);
-        $this->load->view('template/sidebar');
-        $this->load->view('template/topbar');
-        $this->load->view('settings/layanan');
-        $this->load->view('template/footer');
+        $id_vendor = $this->uri->segment(3);
+        $id_layanan = $this->uri->segment(4);
+        if (!$id_vendor && !$id_layanan) {
+            $data['title'] = 'Layanan';
+            $data['user'] = $this->m_global->get_user();
+            $data['data_layanan'] = $this->m_global->get_layanan();
+            $data['data_vendor'] = $this->m_global->get_vendor();
+            $data['data_pelanggan'] = $this->m_global->get_pelanggan();
+            // $data['layananMIN'] = $this->m_global->get_layananMIN();
+            $this->load->view('template/header', $data);
+            $this->load->view('template/sidebar');
+            $this->load->view('template/topbar');
+            $this->load->view('settings/layanan');
+            $this->load->view('template/footer');
+        } else {
+            $data['title'] = 'Layanan';
+            $data['user'] = $this->m_global->get_user();
+            $data['data_customRate'] = $this->m_global->get_customRate($id_vendor, $id_layanan);
+            $data['vendor'] = $this->m_global->get_vendorbyID($id_vendor);
+            $data['layanan'] = $this->m_global->get_layananbyID($id_layanan);
+            $this->load->view('template/header', $data);
+            $this->load->view('template/sidebar');
+            $this->load->view('template/topbar');
+            $this->load->view('settings/customRate');
+            $this->load->view('template/footer');
+        }
     }
     public function add_layanan()
     {
@@ -215,6 +231,7 @@ class Settings extends CI_Controller
         $data = [
             'id_layanan' => htmlspecialchars($this->input->post('id_layanan', true)),
             'id_vendor' => htmlspecialchars($this->input->post('id_vendor', true)),
+            'id_pelanggan' => htmlspecialchars($this->input->post('id_pelanggan', true)),
             'rate' => $rate,
         ];
         $this->db->insert('layanan_join', $data);
@@ -252,5 +269,24 @@ class Settings extends CI_Controller
 			"
         );
         redirect('settings/layanan');
+    }
+
+    public function crosscheck_inputCustomRate()
+    {
+        $id_vendor = $this->input->post('id_vendor');
+        $id_layanan = $this->input->post('id_layanan');
+        $pelanggan = $this->m_global->get_pelanggan();
+
+        $x = 1;
+        foreach ($pelanggan as $p) {
+            $pelanggan_available = $this->m_global->crosscheck_inputCustomRate($id_vendor, $p['id_pelanggan'], $id_layanan);
+            if (!$pelanggan_available) {
+                $output['option'][0] = '<option value="">Select</option>';
+                $output['option'][$x] = '<option value="' .  $p['id_pelanggan'] . '">' . $p['nama_pelanggan'] . '</option>';
+            }
+            $x++;
+        }
+        $output['loop'] = $x;
+        echo json_encode($output);
     }
 }

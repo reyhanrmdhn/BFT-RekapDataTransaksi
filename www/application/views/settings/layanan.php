@@ -36,6 +36,7 @@
             </ul>
             <div class="tab-content" id="pills-tabContent">
                 <?php foreach ($data_layanan as $layanan) :  ?>
+                    <!-- Dinamic Tab -->
                     <div class="tab-pane fade show" id="pills-<?= $layanan['id_layanan'] ?>" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -52,13 +53,12 @@
                         <hr>
                         <div class="card-body" style="padding-top:5px">
                             <div class="table-responsive">
-                                <table class="table display table-bordered table-striped table-hover basic">
+                                <table class="table display table-bordered table-striped table-hover basic text-center">
                                     <thead>
                                         <tr>
                                             <th>No</th>
                                             <th>Vendor</th>
-                                            <th>Layanan</th>
-                                            <th>Rate (IDR)</th>
+                                            <th>Data Custom Rate</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -71,19 +71,41 @@
                                         $this->db->where('layanan_join.id_layanan', $layanan['id_layanan']);
                                         $layanan_join = $this->db->get()->result_array();
                                         ?>
-                                        <?php $x = 1; ?>
+                                        <?php
+                                        $x = 1;
+                                        $y = 0;
+                                        ?>
                                         <?php foreach ($layanan_join as $lj) : ?>
-                                            <tr>
-                                                <td style="width:5%"><?= $x; ?></td>
-                                                <td><?= $lj['nama_vendor']; ?></td>
-                                                <td><?= $lj['layanan']; ?></td>
-                                                <td><?= number_format($lj['rate']) ?></td>
-                                                <td>
-                                                    <button class="btn btn-warning-soft editLayananCustom" data-id="<?= $lj['id_layanan_join'] ?>" data-layanan="<?= $lj['layanan'] ?>" data-vendor="<?= $lj['nama_vendor'] ?>" data-rate="<?= $lj['rate'] ?>"><i class="ti ti-pencil"></i></button>
-                                                    <button class="btn btn-danger-soft md-trigger" data-modal="deleteCustomRate<?= $lj['id_layanan_join'] ?>"><i class="ti ti-trash"></i></button>
-                                                </td>
-                                            </tr>
+                                            <!-- Data tabel muncul di semua tabel secara dinamis -->
+                                            <?php
+                                            // query menampilkan jumlah custom rate dari layanan dan vendor yang sama
+                                            $this->db->select('*');
+                                            $this->db->from('layanan_join');
+                                            $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
+                                            $this->db->join('vendor', 'vendor.id_vendor = layanan_join.id_vendor');
+                                            $this->db->join('pelanggan', 'pelanggan.id_pelanggan = layanan_join.id_pelanggan');
+                                            $this->db->where('layanan_join.id_layanan', $lj['id_layanan']);
+                                            $this->db->where('layanan_join.id_vendor', $lj['id_vendor']);
+                                            $layanan_join_num = $this->db->get()->num_rows();
+                                            ?>
+                                            <?php
+                                            $vendor_loop_plus1 = $lj['id_vendor'][$y + 1];
+                                            $vendor_loop = $lj['id_vendor'];
+                                            if ($vendor_loop_plus1) {
+                                                if ($vendor_loop != $vendor_loop_plus1) { ?>
+                                                    <tr>
+                                                        <td style="width:5%"><?= $x; ?></td>
+                                                        <td style="text-align:left"><?= $lj['nama_vendor']; ?></td>
+                                                        <td><?= $layanan_join_num; ?> Pelanggan</td>
+                                                        <td>
+                                                            <button class="btn btn-info-soft" onclick="location.href='<?= base_url('settings/layanan/' . $lj['id_vendor'] . '/' . $lj['id_layanan']) ?>'"><i class="ti ti-eye"></i></button>
+                                                        </td>
+                                                    </tr>
+                                            <?php  }
+                                            }
+                                            ?>
                                             <?php $x++; ?>
+                                            <?php $y++; ?>
 
                                             <div class="md-modal md-effect-1" id="deleteCustomRate<?= $lj['id_layanan_join'] ?>" style="width:30%">
                                                 <div class="md-content">
@@ -230,26 +252,24 @@
                         <div class="form-group">
                             <label for="">Layanan</label>
                             <input class="form-control" type="text" value="<?= $data['layanan'] ?>" readonly>
-                            <input type="hidden" name="id_layanan" value="<?= $data['id_layanan'] ?>">
+                            <input type="hidden" name="id_layanan" value="<?= $data['id_layanan'] ?>" id="id_layanan">
                         </div>
                         <div class="form-group">
                             <label for="">Vendor</label>
-                            <select class="form-control basic-single required" name="id_vendor">
+                            <select class="form-control basic-single required" name="id_vendor" id="select_vendor">
                                 <option value="">Select</option>
                                 <?php foreach ($data_vendor as $v) : ?>
-                                    <?php
-                                    $this->db->select('*');
-                                    $this->db->from('layanan_join');
-                                    $this->db->where('id_layanan', $data['id_layanan']);
-                                    $this->db->where('id_vendor', $v['id_vendor']);
-                                    $vendorSelect = $this->db->get()->row_array();
-                                    ?>
-                                    <?php if (!$vendorSelect) { ?>
-                                        <option value="<?= $v['id_vendor'] ?>"><?= $v['nama_vendor']; ?></option>
-                                    <?php } ?>
+                                    <option value="<?= $v['id_vendor'] ?>"><?= $v['nama_vendor']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="">Pelanggan</label>
+                            <select class="form-control basic-single required" name="id_pelanggan" id="select_pelanggan">
+                                <option value="">Select</option>
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <label for="">Rate (IDR)</label>
                             <input class="form-control number" placeholder="Masukkan Harga" name="rate">

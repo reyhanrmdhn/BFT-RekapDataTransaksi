@@ -113,6 +113,7 @@
         var tahun_ba = <?= date('Y') ?>;
         var berita_acara = urutan_ba + '/INB/' + bulan_ba + '/' + tahun_ba;
         $('#no_ba').val(berita_acara);
+
     });
 </script>
 </body>
