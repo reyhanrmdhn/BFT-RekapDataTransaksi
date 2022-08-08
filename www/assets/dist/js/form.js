@@ -214,6 +214,23 @@ $(document).ready(function() {
         $('#editRoleModal').modal('show');
     });
 
+    $('.editLayananCustom').on('click', function() {
+        // get data from button edit
+        const id = $(this).data('id');
+        const layanan = $(this).data('layanan');
+        const vendor = $(this).data('vendor');
+        const pelanggan = $(this).data('pelanggan');
+        const rate = $(this).data('rate');
+        // Set data to Form Edit
+        $('.id').val(id);
+        $('.layanan').val(layanan);
+        $('.vendor').val(vendor);
+        $('.pelanggan').val(pelanggan);
+        $('.rate').val(rate).trigger('change');
+        // Call Modal Edit
+        $('#editLayananCustom').modal('show');
+    });
+
 
     var form_addVendor = $('#add_vendor');
     $(form_addVendor).submit(function(e) {
@@ -314,30 +331,6 @@ $(document).ready(function() {
             });
     });
 
-    $('#select_vendor').on('change', function() {
-        var baseURL = window.location.protocol + "//" + window.location.host + "/";
-        var id_vendor = $(this).val();
-        var id_layanan = $('#id_layanan').val();
-
-        $.ajax({
-            url: baseURL + "settings/crosscheck_inputCustomRate",
-            method: "POST",
-            data: {
-                id_vendor: id_vendor,
-                id_layanan: id_layanan
-            },
-            async: true,
-            dataType: 'JSON',
-            success: function(output) {
-                var content = '';
-                for (let index = 0; index < output.loop; index++) {
-                    content += output.option[index];
-                }
-                $('#select_pelanggan').html(content);
-            }
-        });
-        return false;
-    });
 
     var form_addLayanan = $('#add_layanan');
     $(form_addLayanan).submit(function(e) {
@@ -375,6 +368,23 @@ $(document).ready(function() {
 
     $('.deleteLayanan').click(function() {
         $('#editLayanan').modal('hide');
+    });
+
+    var form_editLayananCustom = $('#edit_layananCustom');
+    $(form_editLayananCustom).submit(function(e) {
+        e.preventDefault();
+        var formDataEditLayananCustom = $(form_editLayananCustom).serialize();
+        $.ajax({
+                type: 'POST',
+                url: $(form_editLayananCustom).attr('action'),
+                data: formDataEditLayananCustom,
+                async: true,
+                dataType: 'JSON',
+            })
+            .done(function(response) {
+                window.localStorage.setItem('show_notif_editLayananCustom', 'true');
+                location.reload();
+            });
     });
 
     $('.btn-invoice').on('click', function() {

@@ -48,7 +48,7 @@
                                     <td style="text-align:left"><?= $custom_rate['nama_pelanggan']; ?></td>
                                     <td style="text-align:left">Rp. <?= number_format($custom_rate['rate']); ?></td>
                                     <td>
-                                        <button class="btn btn-warning-soft editLayananCustom" data-id="<?= $custom_rate['id_layanan_join'] ?>" data-layanan="<?= $custom_rate['layanan'] ?>" data-vendor="<?= $custom_rate['nama_vendor'] ?>" data-rate="<?= $custom_rate['rate'] ?>"><i class="ti ti-pencil"></i></button>
+                                        <button class="btn btn-warning-soft editLayananCustom" data-id="<?= $custom_rate['id_layanan_join'] ?>" data-layanan="<?= $custom_rate['layanan'] ?>" data-vendor="<?= $custom_rate['nama_vendor'] ?>" data-pelanggan="<?= $custom_rate['nama_pelanggan'] ?>" data-rate="<?= $custom_rate['rate'] ?>"><i class="ti ti-pencil"></i></button>
                                         <button class="btn btn-danger-soft md-trigger" data-modal="deleteCustomRate<?= $custom_rate['id_layanan_join'] ?>"><i class="ti ti-trash"></i></button>
                                     </td>
                                 </tr>
@@ -58,8 +58,7 @@
                                     <div class="md-content">
                                         <h4 class="font-weight-600 mb-0" style="background-color: #BF1E1B;color:white">Warning!</h4>
                                         <div class="n-modal-body" style="text-align:center ;">
-                                            <p>Apakah Anda Yakin Ingin Menghapus Data Ini?
-                                                <span style="font-weight:bold"><?= $custom_rate['layanan']; ?> (<?= $custom_rate['nama_vendor']; ?>)</span>
+                                            <p class="py-4">Apakah Anda Yakin Ingin Menghapus Data Ini?
                                             </p>
 
                                             <div class="row">
@@ -129,4 +128,45 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="editLayananCustom" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-600" style="margin-left:auto">Edit Data Layanan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="<?= base_url('settings/edit_layananCustom') ?>" method="POST" id="edit_layananCustom">
+                    <div class="form-group">
+                        <label for="">Layanan</label>
+                        <input class="form-control layanan" type="text" readonly>
+                        <input type="hidden" name="id_layanan_join" class="id">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Vendor</label>
+                        <input class="form-control vendor" type="text" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Pelanggan</label>
+                        <input class="form-control pelanggan" type="text" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="">Rate (IDR)</label>
+                        <input class="form-control number rate" placeholder="Masukkan Harga" name="rate">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Edit Layanan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="md-overlay"></div>

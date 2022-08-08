@@ -67,7 +67,24 @@
                 </div>
             </section>
 
-            <!-- Step 12-->
+            <!-- Step 2 -->
+            <h6>FCL/LCL</h6>
+            <section>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for=""> Silahkan Pilih :</label>
+                            <select class="form-control custom-select basic-single required" name="metode" id="metode" style="width: 100%; height:36px;">
+                                <option value="">Select</option>
+                                <option value="fcl">FCL</option>
+                                <option value="lcl">LCL</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3-->
             <h6>Identitas Pelanggan</h6>
             <section>
                 <div class="row">
@@ -112,7 +129,7 @@
                 </div>
             </section>
 
-            <!-- Step 2 -->
+            <!-- Step 4 -->
             <h6>Berita Acara</h6>
             <section>
                 <div class="row">

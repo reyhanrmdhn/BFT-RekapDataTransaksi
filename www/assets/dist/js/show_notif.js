@@ -142,6 +142,25 @@ $(document).ready(function() {
         window.localStorage.removeItem('show_notif_editLayanan');
     }
 
+    if (window.localStorage.getItem('show_notif_editLayananCustom') == 'true') {
+        setTimeout(function() {
+            // create the notification
+            var notification = new NotificationFx({
+                message: '<span class="typcn typcn-tick" style="font-size:30px"></span><p>Data Layanan Telah Berhasil Diedit!</p>',
+                layout: 'bar',
+                effect: 'slidetop',
+                type: 'notice', // notice, warning or error
+            });
+            // show the notification
+            notification.show();
+        }, 1200);
+        // disable the button (for demo purposes only)
+        this.disabled = true;
+
+        window.localStorage.removeItem('show_notif_editLayananCustom');
+    }
+
+
     if (window.localStorage.getItem('show_notif_saveInvoice') == 'true') {
         setTimeout(function() {
             // create the notification
@@ -303,4 +322,5 @@ $(document).ready(function() {
 
         window.localStorage.removeItem('show_notif_rekap_invoice');
     }
+
 });

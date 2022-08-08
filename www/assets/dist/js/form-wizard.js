@@ -8,13 +8,13 @@ $(".validation-wizard").steps({
         finish: "Submit"
     },
     onStepChanging: function(event, currentIndex, newIndex) {
-        if (currentIndex === 3) { //if last step
+        if (currentIndex === 4) { //if last step
             //remove default #finish button
             $('.validation-wizard').find('a[href="#finish"]').remove();
             //append a submit type button
             $('.validation-wizard li:last-child').append('<button type="submit" id="submit" class="btn-large"><span class="fa fa-chevron-right"></span></button>');
         }
-        return currentIndex > newIndex || !(3 === newIndex && Number($("#age-2").val()) < 18) && (currentIndex < newIndex && (form.find(".body:eq(" + newIndex + ") label.error").remove(), form.find(".body:eq(" + newIndex + ") .error").removeClass("error")), form.validate().settings.ignore = ":disabled,:hidden", form.valid())
+        return currentIndex > newIndex || !(4 === newIndex && Number($("#age-2").val()) < 18) && (currentIndex < newIndex && (form.find(".body:eq(" + newIndex + ") label.error").remove(), form.find(".body:eq(" + newIndex + ") .error").removeClass("error")), form.validate().settings.ignore = ":disabled,:hidden", form.valid())
     },
     onFinishing: function(event, currentIndex) {
         $("#form").submit();

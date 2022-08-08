@@ -603,7 +603,7 @@ class Global_model extends CI_Model
         $this->db->where('layanan_join.id_vendor', $id_vendor);
         $this->db->where('layanan_join.id_pelanggan', $id_pelanggan);
         $this->db->where('layanan_join.id_layanan', $id_layanan);
-        $query = $this->db->get()->row_array();
+        $query = $this->db->get()->num_rows();
         return $query;
     }
     function get_customRate($id_vendor, $id_layanan)

@@ -87,6 +87,33 @@
             $('.btn-edit-disable<?= $l['id_layanan'] ?>').hide();
             $('.btn-edit-active<?= $l['id_layanan'] ?>').show();
         });
+
+
+        $('#select_vendor<?= $l['id_layanan'] ?>').on('change', function() {
+            var baseURL = window.location.protocol + "//" + window.location.host + "/";
+            var id_vendor = $('#select_vendor<?= $l['id_layanan'] ?>').val();
+            var id_layanan = $('#id_layanan<?= $l['id_layanan'] ?>').val();
+
+            $.ajax({
+                url: baseURL + "settings/crosscheck_inputCustomRate",
+                method: "POST",
+                data: {
+                    id_vendor: id_vendor,
+                    id_layanan: id_layanan
+                },
+                async: true,
+                dataType: 'JSON',
+                success: function(output) {
+                    var content = '';
+                    for (let index = 0; index < output.loop; index++) {
+                        content += output.option[index];
+                    }
+                    $('#select_pelanggan<?= $l['id_layanan'] ?>').html(content);
+                }
+            });
+            return false;
+        });
+
     <?php endforeach; ?>
 </script>
 <script>

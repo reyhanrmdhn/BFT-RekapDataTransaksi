@@ -69,11 +69,14 @@
                                         $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
                                         $this->db->join('vendor', 'vendor.id_vendor = layanan_join.id_vendor');
                                         $this->db->where('layanan_join.id_layanan', $layanan['id_layanan']);
+                                        $this->db->order_by('layanan_join.id_vendor', 'DESC');
+                                        $this->db->order_by('layanan_join.id_layanan_join', 'ASC');
                                         $layanan_join = $this->db->get()->result_array();
                                         ?>
                                         <?php
                                         $x = 1;
                                         $y = 0;
+                                        $layananArr = [];
                                         ?>
                                         <?php foreach ($layanan_join as $lj) : ?>
                                             <!-- Data tabel muncul di semua tabel secara dinamis -->
@@ -89,19 +92,33 @@
                                             $layanan_join_num = $this->db->get()->num_rows();
                                             ?>
                                             <?php
-                                            $vendor_loop_plus1 = $lj['id_vendor'][$y + 1];
-                                            $vendor_loop = $lj['id_vendor'];
-                                            if ($vendor_loop_plus1) {
-                                                if ($vendor_loop != $vendor_loop_plus1) { ?>
-                                                    <tr>
-                                                        <td style="width:5%"><?= $x; ?></td>
-                                                        <td style="text-align:left"><?= $lj['nama_vendor']; ?></td>
-                                                        <td><?= $layanan_join_num; ?> Pelanggan</td>
-                                                        <td>
-                                                            <button class="btn btn-info-soft" onclick="location.href='<?= base_url('settings/layanan/' . $lj['id_vendor'] . '/' . $lj['id_layanan']) ?>'"><i class="ti ti-eye"></i></button>
-                                                        </td>
-                                                    </tr>
-                                            <?php  }
+                                            $layananArr[$y] = $lj['id_vendor'];
+                                            if ($y == 0) { ?>
+                                                <tr>
+                                                    <td style="width:5%"><?= $x; ?></td>
+                                                    <td style="text-align:left"><?= $lj['nama_vendor']; ?></td>
+                                                    <td><?= $layanan_join_num; ?> Pelanggan</td>
+                                                    <td>
+                                                        <button class="btn btn-info-soft" onclick="location.href='<?= base_url('settings/layanan/' . $lj['id_vendor'] . '/' . $lj['id_layanan']) ?>'"><i class="ti ti-eye"></i></button>
+                                                    </td>
+                                                </tr>
+                                                <?php
+                                            } else {
+                                                if ($layananArr[$y - 1]) {
+                                                    if ($layananArr[$y] == $layananArr[$y - 1]) {
+                                                        continue;
+                                                    } else { ?>
+                                                        <tr>
+                                                            <td style="width:5%"><?= $x; ?></td>
+                                                            <td style="text-align:left"><?= $lj['nama_vendor']; ?></td>
+                                                            <td><?= $layanan_join_num; ?> Pelanggan</td>
+                                                            <td>
+                                                                <button class="btn btn-info-soft" onclick="location.href='<?= base_url('settings/layanan/' . $lj['id_vendor'] . '/' . $lj['id_layanan']) ?>'"><i class="ti ti-eye"></i></button>
+                                                            </td>
+                                                        </tr>
+                                            <?php
+                                                    }
+                                                }
                                             }
                                             ?>
                                             <?php $x++; ?>
@@ -252,11 +269,11 @@
                         <div class="form-group">
                             <label for="">Layanan</label>
                             <input class="form-control" type="text" value="<?= $data['layanan'] ?>" readonly>
-                            <input type="hidden" name="id_layanan" value="<?= $data['id_layanan'] ?>" id="id_layanan">
+                            <input type="hidden" name="id_layanan" value="<?= $data['id_layanan'] ?>" id="id_layanan<?= $data['id_layanan'] ?>">
                         </div>
                         <div class="form-group">
                             <label for="">Vendor</label>
-                            <select class="form-control basic-single required" name="id_vendor" id="select_vendor">
+                            <select class="form-control basic-single required" name="id_vendor" id="select_vendor<?= $data['id_layanan'] ?>">
                                 <option value="">Select</option>
                                 <?php foreach ($data_vendor as $v) : ?>
                                     <option value="<?= $v['id_vendor'] ?>"><?= $v['nama_vendor']; ?></option>
@@ -265,7 +282,7 @@
                         </div>
                         <div class="form-group">
                             <label for="">Pelanggan</label>
-                            <select class="form-control basic-single required" name="id_pelanggan" id="select_pelanggan">
+                            <select class="form-control basic-single required" name="id_pelanggan" id="select_pelanggan<?= $data['id_layanan'] ?>">
                                 <option value="">Select</option>
                             </select>
                         </div>

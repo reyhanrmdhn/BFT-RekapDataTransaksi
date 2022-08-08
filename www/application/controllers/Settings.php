@@ -205,6 +205,20 @@ class Settings extends CI_Controller
         $output = 'Data Berhasil Diedit!';
         echo json_encode($output);
     }
+    public function edit_layananCustom()
+    {
+        $id_layanan_join = $this->input->post('id_layanan_join');
+        $rate = $this->input->post('rate');
+
+        $data = array(
+            'rate' => $rate,
+        );
+        $this->db->where('id_layanan_join =', $id_layanan_join);
+        $this->db->update('layanan_join', $data);
+
+        $output = 'Data Berhasil Diedit!';
+        echo json_encode($output);
+    }
     public function delete_layanan($id)
     {
         $this->db->delete('layanan', array('id_layanan' => $id));
@@ -278,10 +292,10 @@ class Settings extends CI_Controller
         $pelanggan = $this->m_global->get_pelanggan();
 
         $x = 1;
+        $output['option'][0] = '<option value="">Select</option>';
         foreach ($pelanggan as $p) {
             $pelanggan_available = $this->m_global->crosscheck_inputCustomRate($id_vendor, $p['id_pelanggan'], $id_layanan);
-            if (!$pelanggan_available) {
-                $output['option'][0] = '<option value="">Select</option>';
+            if ($pelanggan_available == 0) {
                 $output['option'][$x] = '<option value="' .  $p['id_pelanggan'] . '">' . $p['nama_pelanggan'] . '</option>';
             }
             $x++;
