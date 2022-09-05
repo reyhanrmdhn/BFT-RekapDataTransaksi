@@ -23,7 +23,7 @@
             <li class="nav-item col-lg-2">
                 <a class="nav-link p-0 active" data-toggle="pill" href="#user" role="tab">
                     <!--Active users indicator-->
-                    <div class="p-2 bg-success text-black rounded mb-3 p-3 shadow-sm text-center position-relative overflow-hidden">
+                    <div class="p-2 text-black rounded p-3 text-center position-relative overflow-hidden">
                         <i class="decorative-icon fas fa-user opacity-25 fa-5x animated infinite pulse slower"></i>
                         <pre class="text-white rounded p-2 mb-0">Data User</pre>
                     </div>
@@ -32,7 +32,7 @@
             <li class="nav-item col-lg-2">
                 <a class="nav-link p-0" data-toggle="pill" href="#role" role="tab">
                     <!--Active users indicator-->
-                    <div class="p-2 bg-warning text-black rounded mb-3 p-3 shadow-sm text-center position-relative overflow-hidden">
+                    <div class="p-2 text-black rounded p-3 text-center position-relative overflow-hidden">
                         <i class="decorative-icon fas fa-user-tag opacity-25 fa-5x animated infinite pulse slower"></i>
                         <pre class="text-white rounded p-2 mb-0">Data Role</pre>
                     </div>
@@ -71,7 +71,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $x = 1; ?>
                                 <?php foreach ($data_user as $data) :  ?>
                                     <tr>
                                         <td><?= $data['name']; ?></td>
@@ -85,7 +84,6 @@
                                             <a href="#" class="btn btn-danger-soft btn-sm md-trigger" data-modal="deleteUser<?= $data['id'] ?>"><i class="ti ti-trash" style="font-size: 18px"></i></a>
                                         </td>
                                     </tr>
-                                    <?php $x++; ?>
                                 <?php endforeach; ?>
                             </tbody>
 

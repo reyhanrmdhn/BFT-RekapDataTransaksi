@@ -100,6 +100,7 @@ class Global_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('layanan');
+        $this->db->where('is_deleted', '0');
         $query = $this->db->get()->result_array();
         return $query;
     }
@@ -183,7 +184,7 @@ class Global_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('invoice');
-        $this->db->join('invoice_custom', 'invoice_custom.id_invoice = invoice.id_invoice');
+        $this->db->where('invoice.id_ba', '');
         $this->db->where('invoice.id_invoice', $id);
         $query = $this->db->get()->row_array();
         return $query;
@@ -211,7 +212,7 @@ class Global_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('invoice');
-        $this->db->join('invoice_custom', 'invoice_custom.id_invoice = invoice.id_invoice');
+        $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
         $this->db->where('invoice.id_invoice', $id);
         $query = $this->db->get()->row_array();
         return $query;
@@ -231,6 +232,7 @@ class Global_model extends CI_Model
         $this->db->from('invoice');
         $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
         $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice.id_pelanggan');
+        $this->db->where('invoice.id_ba !=', '');
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -347,14 +349,16 @@ class Global_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
-    function get_vendorInvoice($id_vendor)
+    function get_vendorInvoice($id_vendor, $tipe_ba, $no_container)
     {
         $this->db->select('*');
         $this->db->from('berita_acara');
         $this->db->join('vendor', 'vendor.id_vendor = berita_acara.id_vendor');
         $this->db->join('layanan', 'layanan.id_layanan = berita_acara.id_layanan');
         $this->db->where('berita_acara.id_vendor', $id_vendor);
-        $this->db->where('berita_acara.invoice_done', 0);
+        $this->db->where('berita_acara.tipe_ba', $tipe_ba);
+        $this->db->where('berita_acara.no_container', $no_container);
+        $this->db->where('berita_acara.is_scanned', 1);
         $query = $this->db->get();
         return $query;
     }
@@ -407,26 +411,6 @@ class Global_model extends CI_Model
         $query = $this->db->get()->row_array();
         return $query;
     }
-    function get_customINV_data()
-    {
-        $this->db->select('*');
-        $this->db->from('invoice');
-        $this->db->join('invoice_custom', 'invoice_custom.id_invoice = invoice.id_invoice');
-        $this->db->order_by('invoice.tanggal_invoice', 'DESC');
-        $query = $this->db->get()->result_array();
-        return $query;
-    }
-    function get_customINV_detail($id)
-    {
-        $this->db->select('*');
-        $this->db->from('invoice');
-        $this->db->join('invoice_custom', 'invoice_custom.id_invoice = invoice.id_invoice');
-        $this->db->join('user', 'user.id = invoice.id_user');
-        $this->db->where('invoice.id_invoice', $id);
-        $query = $this->db->get()->row_array();
-        return $query;
-    }
-
     function get_invoice_joinBA()
     {
         $this->db->select('*');
@@ -453,6 +437,7 @@ class Global_model extends CI_Model
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 0);
         $this->db->where('invoice.is_payed', 0);
+        $this->db->where('invoice.id_ba !=', '');
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -476,6 +461,7 @@ class Global_model extends CI_Model
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 1);
         $this->db->where('invoice.is_payed', 0);
+        $this->db->where('invoice.id_ba !=', '');
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -499,6 +485,7 @@ class Global_model extends CI_Model
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 1);
         $this->db->where('invoice.is_payed', 1);
+        $this->db->where('invoice.id_ba !=', '');
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -515,12 +502,61 @@ class Global_model extends CI_Model
     }
 
 
+    // ----------------------- CUSTOM INVOICE ----------------------------------------
+    function get_customINV_data()
+    {
+        $this->db->select('*');
+        $this->db->from('invoice');
+        $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
+        $this->db->where('invoice.id_ba', '');
+        $this->db->order_by('invoice.tanggal_invoice', 'DESC');
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+    function get_customINV_detail($id)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice');
+        $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
+        $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice.id_pelanggan');
+        $this->db->join('user', 'user.id = invoice.id_user');
+        $this->db->where('invoice.id_invoice', $id);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+    function get_customINV_deskripsi($id)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice');
+        $this->db->join('invoice_custom_detail', 'invoice_custom_detail.id_invoice = invoice.id_invoice');
+        $this->db->where('invoice.id_invoice', $id);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+    function get_customINV_addons($id)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice');
+        $this->db->join('invoice_addons', 'invoice_addons.id_invoice = invoice.id_invoice');
+        $this->db->where('invoice.id_invoice', $id);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+    function get_customINV_container($id)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice');
+        $this->db->join('invoice_custom_container', 'invoice_custom_container.id_invoice = invoice.id_invoice');
+        $this->db->where('invoice.id_invoice', $id);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
     function get_custInvoice()
     {
         $this->db->select('*');
         $this->db->from('invoice');
-        $this->db->join('invoice_custom', 'invoice_custom.id_invoice = invoice.id_invoice');
-        $this->db->order_by('invoice.tanggal_invoice', 'DESC');
+        $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
+        $this->db->where('invoice.id_ba', '');
         $query = $this->db->get();
         return $query;
     }
@@ -528,7 +564,8 @@ class Global_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('invoice');
-        $this->db->join('invoice_custom', 'invoice_custom.id_invoice = invoice.id_invoice');
+        $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
+        $this->db->where('invoice.id_ba', '');
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 0);
         $this->db->where('invoice.is_payed', 0);
@@ -540,7 +577,8 @@ class Global_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('invoice');
-        $this->db->join('invoice_custom', 'invoice_custom.id_invoice = invoice.id_invoice');
+        $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
+        $this->db->where('invoice.id_ba', '');
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 1);
         $this->db->where('invoice.is_payed', 0);
@@ -552,7 +590,8 @@ class Global_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('invoice');
-        $this->db->join('invoice_custom', 'invoice_custom.id_invoice = invoice.id_invoice');
+        $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
+        $this->db->where('invoice.id_ba', '');
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 1);
         $this->db->where('invoice.is_payed', 1);
@@ -560,6 +599,7 @@ class Global_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
+    // --------------------------- END OF CUSTOM INVOICE ---------------------------------------------------
 
     function get_dataInvoicePayed($id)
     {
@@ -581,14 +621,26 @@ class Global_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
-    function get_vendor_layanan($id_vendor, $id_layanan)
+    function get_vendor_layanan($id_vendor, $id_layanan, $id_pelanggan)
     {
         $this->db->select('*');
         $this->db->from('layanan_join');
+        $this->db->join('pelanggan', 'pelanggan.id_pelanggan = layanan_join.id_pelanggan');
         $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
-        $this->db->join('vendor', 'vendor.id_vendor = layanan_join.id_vendor');
         $this->db->where('layanan_join.id_vendor', $id_vendor);
         $this->db->where('layanan_join.id_layanan', $id_layanan);
+        $this->db->where('layanan_join.id_pelanggan', $id_pelanggan);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+    function get_descriptionRate($id_invoice, $id_pelanggan)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice_rate');
+        $this->db->join('invoice', 'invoice.id_invoice = invoice_rate.id_invoice');
+        $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice_rate.id_pelanggan');
+        $this->db->where('invoice_rate.id_invoice', $id_invoice);
+        $this->db->where('invoice_rate.id_pelanggan', $id_pelanggan);
         $query = $this->db->get()->row_array();
         return $query;
     }
@@ -615,7 +667,73 @@ class Global_model extends CI_Model
         $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
         $this->db->where('layanan_join.id_vendor', $id_vendor);
         $this->db->where('layanan_join.id_layanan', $id_layanan);
+        $this->db->where('layanan_join.is_deleted', '0');
         $query = $this->db->get()->result_array();
+        return $query;
+    }
+    function get_no_container($id_vendor, $tipe_ba)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara');
+        $this->db->where('id_vendor', $id_vendor);
+        $this->db->where('tipe_ba', $tipe_ba);
+        $this->db->where('invoice_done', 0);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+    function get_pelanggan_LCL_model($id_vendor, $no_container)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara');
+        $this->db->join('pelanggan', 'berita_acara.id_pelanggan = pelanggan.id_pelanggan');
+        $this->db->where('berita_acara.id_vendor', $id_vendor);
+        $this->db->where('berita_acara.no_container', $no_container);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+    function ba_lcl($id_vendor, $no_container)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara');
+        $this->db->join('pelanggan', 'berita_acara.id_pelanggan = pelanggan.id_pelanggan');
+        $this->db->where('berita_acara.id_vendor', $id_vendor);
+        $this->db->where('berita_acara.no_container', $no_container);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+    function get_ba_byPelanggan($id_pelanggan)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara');
+        $this->db->where('id_pelanggan', $id_pelanggan);
+        $query = $this->db->get()->num_rows();
+        return $query;
+    }
+    function get_ba_avail($no_ba)
+    {
+        $this->db->get('*');
+        $this->db->from('berita_acara');
+        $this->db->like('no_ba', $no_ba);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+    function get_qty_invoice($id_vendor, $no_container, $id_pelanggan)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara');
+        $this->db->where('id_vendor', $id_vendor);
+        $this->db->where('no_container', $no_container);
+        $this->db->where('id_pelanggan', $id_pelanggan);
+        $query = $this->db->get()->num_rows();
+        return $query;
+    }
+    function get_InvoiceAddons($id_invoice)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice_addons');
+        $this->db->join('invoice', 'invoice.id_invoice = invoice_addons.id_invoice');
+        $this->db->where('invoice_addons.id_invoice', $id_invoice);
+        $query = $this->db->get();
         return $query;
     }
 }

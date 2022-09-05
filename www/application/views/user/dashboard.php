@@ -7,7 +7,7 @@
 <!--Content Header (Page header)-->
 <div class="content-header row align-items-center m-0">
     <nav aria-label="breadcrumb" class="col-sm-4 order-sm-last mb-3 mb-sm-0 p-0 ">
-        <button class="btn btn-success float-sm-right font-weight-600 fs-18 px-5 md-trigger" data-modal="rekapData"><i class="fas fa-file-excel"></i>&nbsp;&nbsp; Rekap Data</button>
+        <button class="btn btn-success float-sm-right font-weight-600 fs-18 px-5" onclick="location.href='<?= base_url('user/rekap_dataInvoice') ?>'"><i class="fas fa-file-excel"></i>&nbsp;&nbsp; Rekap Data</button>
     </nav>
     <div class="col-sm-8 header-title p-0">
         <div class="media">
@@ -124,12 +124,12 @@
                     </div>
                 </div>
                 <!--  -->
-                <div class="col-md-6 col-lg-6" onclick="location.href='<?= base_url('transaksi/scan_ba') ?>'" style="cursor:pointer">
+                <div class="col-md-6 col-lg-6 md-trigger" <?php if ($user['role_id'] == 3) { ?> data-modal="modalAuthRole" <?php  } else { ?> onclick="location.href='<?= base_url('transaksi/scan_ba') ?>'" <?php  } ?> style="cursor:pointer">
                     <div class="p-1 bg-success text-black rounded mb-3 shadow-sm text-center position-relative overflow-hidden">
                         <pre class="text-white mb-0">Scan Berita Acara</pre>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-6 md-trigger" <?php if ($user['role_id'] != 1 && $user['role_id'] != 3) { ?> data-modal="modalAuthRole" <?php  } else { ?> onclick="location.href='<?= base_url('transaksi/scan_invoice') ?>'" <?php  } ?> style="cursor:pointer">
+                <div class="col-md-6 col-lg-6 md-trigger" <?php if ($user['role_id'] == 3) { ?> onclick="location.href='<?= base_url('finance/scan_invoice') ?>'" <?php  } else { ?> data-modal="modalAuthRole2" <?php } ?> style="cursor:pointer">
                     <div class="p-1 bg-dark text-black rounded mb-3 shadow-sm text-center position-relative overflow-hidden">
                         <pre class="text-white rounded p-2 mb-0">Scan Invoice</pre>
                     </div>
@@ -240,68 +240,139 @@
                 </div>
             </div>
         </div>
+
         <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="fs-17 font-weight-600 mb-0">Recent Orders</h6>
+            <?php if ($user['role_id'] == 3) { ?>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="fs-17 font-weight-600 mb-0">Recent Invoice</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class=table-responsive>
+                            <!--<table class="table table-sm table-nowrap card-table">-->
+                            <table class="table display table-bordered table-striped table-hover bg-white m-0 card-table">
+                                <thead>
+                                    <style>
+                                        th {
+                                            text-align: center;
+                                        }
+                                    </style>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Vendor</th>
+                                        <th>No. Invoice</th>
+                                        <th>Tanggal</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $x = 1; ?>
+                                    <?php foreach ($data_inv_max5 as $inv) : ?>
+                                        <tr>
+                                            <td><?= $x; ?></td>
+                                            <td><?= $inv['nama_vendor']; ?></td>
+                                            <td><?= $inv['no_invoice']; ?></td>
+                                            <td style="text-align: center;"><?= date('d/F/Y', $inv['tanggal_invoice']); ?></td>
+                                            <td style="text-align: center;">
+                                                <?php if ($inv['is_fix'] == 0 && $inv['is_scanned'] == 0 && $inv['is_payed'] == 0) { ?>
+                                                    <button class="btn btn-warning" type="button" disabled>Draft</button>
+                                                <?php } ?>
+                                                <?php if ($inv['is_fix'] == 1 && $inv['is_scanned'] == 0 && $inv['is_payed'] == 0) { ?>
+                                                    <button class="btn btn-danger" type="button" disabled>Belum Di-Scan</button>
+                                                <?php } ?>
+                                                <?php if ($inv['is_fix'] == 1 && $inv['is_scanned'] == 1 && $inv['is_payed'] == 0) { ?>
+                                                    <button class="btn btn-info" type="button" disabled>Sedang Diproses</button>
+                                                <?php } ?>
+                                                <?php if ($inv['is_fix'] == 1 && $inv['is_scanned'] == 1 && $inv['is_payed'] == 1) { ?>
+                                                    <button class="btn btn-success" type="button" disabled>Telah Dibayar</button>
+                                                <?php } ?>
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <?php if ($inv['id_ba'] == '') { ?>
+                                                    <a href="<?= base_url('finance/detail_custom_invoice/' . $inv['id_invoice']) ?>" class="btn btn-info-soft"><i class="ti ti-zoom-in" style="font-size: 18x"></i></a>
+                                                <?php } else { ?>
+                                                    <a href="<?= base_url('finance/detail_invoice/' . $inv['id_invoice']) ?>" class="btn btn-info-soft"><i class="ti ti-zoom-in" style="font-size: 18x"></i></a>
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+                                        <?php $x++; ?>
+                                    <?php endforeach; ?>
+                                </tbody>
+
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class=table-responsive>
-                        <!--<table class="table table-sm table-nowrap card-table">-->
-                        <table class="table display table-bordered table-striped table-hover bg-white m-0 card-table">
-                            <thead>
-                                <style>
-                                    th {
-                                        text-align: center;
-                                    }
-                                </style>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Vendor</th>
-                                    <th>No. Berita Acara</th>
-                                    <th>Tanggal</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $x = 1; ?>
-                                <?php foreach ($data_ba_max5 as $ba) : ?>
-                                    <tr>
-                                        <td><?= $x; ?></td>
-                                        <td><?= $ba['nama_vendor']; ?></td>
-                                        <td><?= $ba['no_ba']; ?></td>
-                                        <td style="text-align: center;"><?= date('d/F/Y', $ba['tanggal_ba']); ?></td>
-                                        <td style="text-align: center;">
-                                            <?php if ($ba['is_scanned'] == 0) { ?>
-                                                <button class="btn btn-warning" type="button" disabled>Sedang Diproses</button>
-                                            <?php } ?>
-                                            <?php if ($ba['is_scanned'] == 1 && $ba['invoice_done'] == 0) { ?>
-                                                <button class="btn btn-danger" type="button" disabled>Telah Di-Scan</button>
-                                            <?php } ?>
-                                            <?php if ($ba['invoice_done'] == 1 && $ba['invoice_done'] == 1) { ?>
-                                                <button class="btn btn-info" type="button" disabled>Invoice Telah Dicetak</button>
-                                            <?php } ?>
-                                        </td>
-                                        <td style="text-align: center;">
-                                            <a href="<?= base_url('transaksi/detail/' . $ba['id_ba']) ?>" class="btn btn-info-soft"><i class="ti ti-zoom-in" style="font-size: 18x"></i></a>
-                                            <?php if ($ba['is_scanned'] == 1 && $ba['invoice_done'] == 0) { ?>
-                                                <button class="btn btn-success btn-invoice" data-id_vendor="<?= $ba['id_vendor'] ?>">Cetak Invoice</button>
-                                            <?php } ?>
-                                        </td>
-                                    </tr>
-                                    <?php $x++; ?>
-                                <?php endforeach; ?>
-                            </tbody>
 
-                        </table>
+            <?php } else { ?>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="fs-17 font-weight-600 mb-0">Recent Orders</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class=table-responsive>
+                            <!--<table class="table table-sm table-nowrap card-table">-->
+                            <table class="table display table-bordered table-striped table-hover bg-white m-0 card-table">
+                                <thead>
+                                    <style>
+                                        th {
+                                            text-align: center;
+                                        }
+                                    </style>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Vendor</th>
+                                        <th>No. Berita Acara</th>
+                                        <th>Tanggal</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $x = 1; ?>
+                                    <?php foreach ($data_ba_max5 as $ba) : ?>
+                                        <tr>
+                                            <td><?= $x; ?></td>
+                                            <td><?= $ba['nama_vendor']; ?></td>
+                                            <td><?= $ba['no_ba']; ?></td>
+                                            <td style="text-align: center;"><?= date('d/F/Y', $ba['tanggal_ba']); ?></td>
+                                            <td style="text-align: center;">
+                                                <?php if ($ba['is_scanned'] == 0) { ?>
+                                                    <button class="btn btn-warning" type="button" disabled>Sedang Diproses</button>
+                                                <?php } ?>
+                                                <?php if ($ba['is_scanned'] == 1 && $ba['invoice_done'] == 0) { ?>
+                                                    <button class="btn btn-danger" type="button" disabled>Telah Di-Scan</button>
+                                                <?php } ?>
+                                                <?php if ($ba['invoice_done'] == 1 && $ba['invoice_done'] == 1) { ?>
+                                                    <button class="btn btn-info" type="button" disabled>Invoice Telah Dicetak</button>
+                                                <?php } ?>
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <a href="<?= base_url('transaksi/detail/' . $ba['id_ba']) ?>" class="btn btn-info-soft"><i class="ti ti-zoom-in" style="font-size: 18x"></i></a>
+                                                <?php if ($ba['is_scanned'] == 1 && $ba['invoice_done'] == 0) { ?>
+                                                    <button class="btn btn-success btn-invoice" data-id_vendor="<?= $ba['id_vendor'] ?>">Cetak Invoice</button>
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+                                        <?php $x++; ?>
+                                    <?php endforeach; ?>
+                                </tbody>
+
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+            <?php } ?>
         </div>
     </div>
 </div>
@@ -325,28 +396,20 @@
     </div>
 </div>
 
-<div class="md-modal md-effect-1" id="rekapData" style="width:30%">
+<div class="md-modal md-effect-1" id="modalAuthRole2" style="width:30%">
     <div class="md-content">
-        <h4 class="font-weight-600 mb-0" style="background-color: #056839;color:white">Rekap Data</h4>
-        <div class="n-modal-body">
-            <div class="row mb-4">
-                <div class="col-lg-6">
-                    <h5 class="text-center">Berita Acara</h5>
-                    <button class="btn btn-info btn-block" onclick="location.href='<?= base_url('user/rekap_dataBA_tanggal') ?>'">Per Tanggal</button>
-                    <button class="btn btn-success btn-block" onclick="location.href='<?= base_url('user/rekap_dataBA_status') ?>'">Per Status</button>
-                </div>
-                <div class="col-lg-6">
-                    <h5 class="text-center">Invoice</h5>
-                    <button class="btn btn-info btn-block" onclick="location.href='<?= base_url('user/rekap_dataInvoice_tanggal') ?>'">Per Tanggal</button>
-                    <button class="btn btn-success btn-block" onclick="location.href='<?= base_url('user/rekap_dataInvoice_status') ?>'">Per Status</button>
-
-                </div>
-            </div>
+        <h4 class="font-weight-600 mb-0" style="background-color: #BF1E1B;color:white">Warning!</h4>
+        <div class="n-modal-body" style="text-align:center ;">
+            <p>Role Anda Tidak Memiliki Akses Untuk Fitur Ini!
+            </p>
 
             <div class="row">
-                <div class="col-lg-12"><button class="btn btn-danger md-close btn-block">Close</button></div>
+                <div class="col-lg-12">
+                    <button class="btn btn-success md-close btn-block">Close</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 <div class="md-overlay"></div>

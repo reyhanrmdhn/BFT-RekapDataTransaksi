@@ -7,7 +7,7 @@
 <!--Content Header (Page header)-->
 <div class="content-header row align-items-center m-0">
     <nav aria-label="breadcrumb" class="col-sm-4 order-sm-last mb-3 mb-sm-0 p-0 ">
-        <button class="btn btn-success float-sm-right font-weight-600 fs-18 px-5 md-trigger" data-modal="rekapData"><i class="fas fa-file-excel"></i>&nbsp;&nbsp; Rekap Data</button>
+        <button class="btn btn-success float-sm-right font-weight-600 fs-18 px-5" onclick="location.href='<?= base_url('admin/rekap_dataInvoice') ?>'"><i class="fas fa-file-excel"></i>&nbsp;&nbsp; Rekap Data</button>
     </nav>
     <div class="col-sm-8 header-title p-0">
         <div class="media">
@@ -129,7 +129,7 @@
                         <pre class="text-white mb-0">Scan Berita Acara</pre>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-6 md-trigger" <?php if ($user['role_id'] != 1 && $user['role_id'] != 3) { ?> data-modal="modalAuthRole" <?php  } else { ?> onclick="location.href='<?= base_url('transaksi/scan_invoice') ?>'" <?php  } ?> style="cursor:pointer">
+                <div class="col-md-6 col-lg-6 md-trigger" <?php if ($user['role_id'] != 1 && $user['role_id'] != 3) { ?> data-modal="modalAuthRole" <?php  } else { ?> onclick="location.href='<?= base_url('finance/scan_invoice') ?>'" <?php  } ?> style="cursor:pointer">
                     <div class="p-1 bg-dark text-black rounded mb-3 shadow-sm text-center position-relative overflow-hidden">
                         <pre class="text-white rounded p-2 mb-0">Scan Invoice</pre>
                     </div>
@@ -325,28 +325,4 @@
     </div>
 </div>
 
-<div class="md-modal md-effect-1" id="rekapData" style="width:30%">
-    <div class="md-content">
-        <h4 class="font-weight-600 mb-0" style="background-color: #056839;color:white">Rekap Data</h4>
-        <div class="n-modal-body">
-            <div class="row mb-4">
-                <div class="col-lg-6">
-                    <h5 class="text-center">Berita Acara</h5>
-                    <button class="btn btn-info btn-block" onclick="location.href='<?= base_url('admin/rekap_dataBA_tanggal') ?>'">Per Tanggal</button>
-                    <button class="btn btn-success btn-block" onclick="location.href='<?= base_url('admin/rekap_dataBA_status') ?>'">Per Status</button>
-                </div>
-                <div class="col-lg-6">
-                    <h5 class="text-center">Invoice</h5>
-                    <button class="btn btn-info btn-block" onclick="location.href='<?= base_url('admin/rekap_dataInvoice_tanggal') ?>'">Per Tanggal</button>
-                    <button class="btn btn-success btn-block" onclick="location.href='<?= base_url('admin/rekap_dataInvoice_status') ?>'">Per Status</button>
-
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-12"><button class="btn btn-danger md-close btn-block">Close</button></div>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="md-overlay"></div>

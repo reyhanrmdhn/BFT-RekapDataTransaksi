@@ -67,88 +67,30 @@ class Transaksi extends CI_Controller
         $this->load->view('transaksi/input');
         $this->load->view('template/footer');
     }
-
-    public function invoice()
-    {
-        $data['title'] = 'Invoice';
-        $data['user'] = $this->m_global->get_user();
-        $data['invoice'] = $this->m_global->get_invoice_join()->result_array();
-        $data['data_invoiceProses'] = $this->m_global->get_invoiceProses()->result_array();
-        $data['data_invoiceScanned'] = $this->m_global->get_invoiceScanned()->result_array();
-        $data['data_invoicePayed'] = $this->m_global->get_invoicePayed()->result_array();
-
-        $data['data_invoiceNUM'] = $this->m_global->get_invoice_join()->num_rows();
-        $data['data_invoiceProsesNUM'] = $this->m_global->get_invoiceProses()->num_rows();
-        $data['data_invoiceScannedNUM'] = $this->m_global->get_invoiceScanned()->num_rows();
-        $data['data_invoicePayedNUM'] = $this->m_global->get_invoicePayed()->num_rows();
-
-        $this->load->view('template/header', $data);
-        $this->load->view('template/sidebar');
-        $this->load->view('template/topbar');
-        $this->load->view('transaksi/invoice');
-        $this->load->view('template/footer');
-    }
-    public function detail_invoice($id)
-    {
-        $data['title'] = 'Invoice';
-        $data['user'] = $this->m_global->get_user();
-        $data['invoice'] = $this->m_global->get_invoice_detail($id)->row_array();
-        $invoice = $this->m_global->get_invoice_detail($id)->row_array();
-        $data['invoice_payed'] = $this->m_global->get_dataInvoicePayed($id)->row_array();
-        $data['invoice_scanned'] = $this->m_global->get_dataInvoiceScanned($id);
-
-        $this->load->view('template/header', $data);
-        $this->load->view('template/sidebar');
-        $this->load->view('template/topbar');
-        $this->load->view('transaksi/invoice_detail');
-        if ($invoice['is_fix'] == 0) {
-            $this->load->view('template/footer');
-        } else {
-            $this->load->view('template/footer2');
-        }
-    }
-    public function save_invoice()
-    {
-        $id_invoice = $this->input->post('id_invoice');
-        $invoice_grand = $this->m_global->get_invoice_byID($id_invoice);
-        if ($invoice_grand['grand_total'] != '') {
-            $data = [
-                'port_loading' => $this->input->post('port_loading'),
-                'port_destination' => $this->input->post('port_destination'),
-                'is_fix' => 1,
-            ];
-        } else if (($invoice_grand['grand_total'] == '')) {
-            $data = [
-                'grand_total' => $this->input->post('grand_total'),
-                'port_loading' => $this->input->post('port_loading'),
-                'port_destination' => $this->input->post('port_destination'),
-                'is_fix' => 1,
-            ];
-        }
-        $this->db->where('invoice.id_invoice =', $id_invoice);
-        $this->db->update('invoice', $data);
-        $output = 'Data Berhasil Diedit!';
-        echo json_encode($output);
-    }
     public function input_berita_acara()
     {
         $format = bin2hex(random_bytes(6));
         $data = [
             'id_ba' => $format,
             'no_ba' => htmlspecialchars($this->input->post('no_ba', true)),
+            'tipe_ba' => htmlspecialchars($this->input->post('tipe_ba', true)),
             'id_vendor' => htmlspecialchars($this->input->post('id_vendor', true)),
             'id_pelanggan' => htmlspecialchars($this->input->post('id_pelanggan', true)),
             'id_layanan' => htmlspecialchars($this->input->post('id_layanan', true)),
             'barang' => $this->input->post('barang'),
+            'size' => $this->input->post('size'),
             'no_container' => $this->input->post('no_container'),
             'commodity' => $this->input->post('commodity'),
             'ex_kapal' => $this->input->post('ex_kapal'),
+            'voyager' => $this->input->post('voyager'),
             'tgl_sandar' => $this->input->post('tgl_sandar'),
+            'jumlah_muatan' => $this->input->post('jumlah_muatan'),
             'lokasi_bongkar' => $this->input->post('lokasi_bongkar'),
             'tanggal_ba' => time(),
             'is_scanned' => 0,
             'is_printed' => 0,
-            'id_user' => $this->session->userdata('id')
+            'id_user' => $this->session->userdata('id'),
+            'invoice_done' => 0
         ];
         $this->db->insert('berita_acara', $data);
         $this->session->set_flashdata(
@@ -175,12 +117,15 @@ class Transaksi extends CI_Controller
             $id_ba = implode(";", $this->input->post('id_ba'));
             $e = explode(';', $id_ba);
             $x = 0;
+            $rate = 0;
             foreach ($e as $r) {
+                $berita_acara = $this->m_global->get_ba_byID($r);
+                $vendor_layanan = $this->m_global->get_vendor_layanan($this->input->post('id_vendor'), $this->input->post('id_layanan'), $berita_acara['id_pelanggan']);
+                $rate = $rate + $vendor_layanan['rate'];
                 $x++;
             }
         }
         $format = bin2hex(random_bytes(6));
-        $vendor_layanan = $this->m_global->get_vendor_layanan($this->input->post('id_vendor'), $this->input->post('id_layanan'));
         if ($vendor_layanan) {
             $data = [
                 'id_invoice' => $format,
@@ -189,7 +134,7 @@ class Transaksi extends CI_Controller
                 'id_vendor' => $this->input->post('id_vendor'),
                 'id_pelanggan' => $this->input->post('id_pelanggan'),
                 'id_layanan' => $this->input->post('id_layanan'),
-                'grand_total' => $vendor_layanan['rate'] * $x,
+                'grand_total' => $rate,
                 'id_user' => $this->session->userdata('id'),
                 'tanggal_invoice' => time(),
                 'port_loading' => '',
@@ -238,7 +183,6 @@ class Transaksi extends CI_Controller
 
         redirect('transaksi');
     }
-
     public function change_ba_printed()
     {
         $is_printed = $this->input->post('is_printed');
@@ -258,6 +202,7 @@ class Transaksi extends CI_Controller
         );
         $this->db->insert('cetak_berita_acara', $data_cetak_ba);
     }
+
     public function get_data_vendor()
     {
         $id = $this->input->post('id');
@@ -273,10 +218,109 @@ class Transaksi extends CI_Controller
     public function get_pelanggan_invoice()
     {
         $id_vendor = $this->input->post('id_vendor');
-        $data['detail'] = $this->m_global->get_vendorInvoice($id_vendor)->row_array();
-        $data['loop'] = $this->m_global->get_vendorInvoice($id_vendor)->result_array();
+        $tipe_ba = $this->input->post('tipe_ba');
+        $no_container = $this->input->post('no_container');
+        $data['detail'] = $this->m_global->get_vendorInvoice($id_vendor, $tipe_ba, $no_container)->row_array();
+        $ba = $this->m_global->get_vendorInvoice($id_vendor, $tipe_ba, $no_container)->result_array();
+        $x = 0;
+        foreach ($ba as $b) {
+            $check_layanan = $this->m_global->get_vendor_layanan($b['id_vendor'], $b['id_layanan'], $b['id_pelanggan']);
+            if ($check_layanan) {
+                $data[$x]['berita_acara'] = '<input class="form-check-input" type="checkbox" name="id_ba[]" value="' . $b['id_ba'] . '">' . $b['no_ba'] . '</label>';
+            } else {
+                $data[$x]['berita_acara'] = '<input class="form-check-input" type="checkbox" name="id_ba[]" value="' . $b['id_ba'] . '" disabled> ' . $b['no_ba'] . ' <span style="color:red">&nbsp(Custom Rate Pada BA ini Tidak Tersedia)</span></label>';
+            }
+            $x++;
+        }
+        $data['loop'] = $x;
 
         echo json_encode($data);
+    }
+    public function get_NoContainer()
+    {
+        $id_vendor = $this->input->post('id_vendor');
+        $tipe_ba = $this->input->post('tipe_ba');
+        $container = $this->m_global->get_no_container($id_vendor, $tipe_ba);
+        $x = 0;
+        $tempArr = [];
+        // mengisi variable temporary array
+        foreach ($container as $c) {
+            $tempArr[$x] = $c['no_container'];
+            $x++;
+        }
+        $data = array_values(array_unique($tempArr));
+
+        echo json_encode($data);
+    }
+    public function get_pelanggan_LCL()
+    {
+        $id_vendor = $this->input->post('id_vendor');
+        $no_container = $this->input->post('no_container');
+        $get_pelanggan = $this->m_global->get_pelanggan();
+        $get_pelanggan_lcl = $this->m_global->get_pelanggan_LCL_model($id_vendor, $no_container);
+
+        $id_pelanggan_lcl = [];
+        $x = 0;
+        foreach ($get_pelanggan_lcl as $lcl) {
+            $id_pelanggan_lcl[$x] = $lcl['id_pelanggan'];
+            $x++;
+        }
+
+        $id_pelanggan = [];
+        $i = 0;
+        foreach ($get_pelanggan as $p) {
+            $id_pelanggan[$i] = $p['id_pelanggan'];
+            $i++;
+        }
+
+        $result = array_values(array_diff($id_pelanggan, $id_pelanggan_lcl));
+        $loop = 0;
+        $output = [];
+        foreach ($result as $r) {
+            $output[$loop]['id_pelanggan'] = $r;
+            $nama_pelanggan = $this->db->get_where('pelanggan', ['id_pelanggan' => $r])->row_array();
+            $output[$loop]['nama_pelanggan'] = $nama_pelanggan['nama_pelanggan'];
+            $loop++;
+        }
+        // $output = [];
+        // $y = 0;
+        // $loop = 0;
+        // foreach ($get_pelanggan as $p) {
+        //     if ($y < $x) {
+        //         if ($p['id_pelanggan'] != $id_pelanggan_lcl[$y]) {
+        //             $output[$loop]['id_pelanggan'] = $p['id_pelanggan'];
+        //             $output[$loop]['nama_pelanggan'] = $p['nama_pelanggan'];
+        //             $loop++;
+        //             $y++;
+        //         } else {
+        //             continue;
+        //         }
+        //     } else {
+        //         $output[$loop]['id_pelanggan'] = $p['id_pelanggan'];
+        //         $output[$loop]['nama_pelanggan'] = $p['nama_pelanggan'];
+        //         $loop++;
+        //         $y++;
+        //     }
+        // }
+        $output['loop'] = $loop;
+        $output['berita_acara'] = $this->m_global->ba_lcl($id_vendor, $no_container);
+        echo json_encode($output);
+    }
+    public function get_pelanggan()
+    {
+        $get_pelanggan = $this->m_global->get_pelanggan();
+        echo json_encode($get_pelanggan);
+    }
+    public function validate_no_ba()
+    {
+        $no_ba = $this->input->post('no_ba');
+        $get_ba_avail = $this->m_global->get_ba_avail($no_ba);
+        if ($get_ba_avail == NULL) {
+            $output = 100;
+        } else {
+            $output = 404;
+        }
+        echo json_encode($output);
     }
 
     public function add_vendor()
@@ -343,43 +387,11 @@ class Transaksi extends CI_Controller
         $this->load->view('template/footer_print');
     }
 
-    public function pembayaran($id)
-    {
-        $data = array(
-            'is_payed' => 1,
-        );
-        $this->db->where('invoice.id_invoice =', $id);
-        $this->db->update('invoice', $data);
-
-        $data_validasi = array(
-            'id_invoice' => $id,
-            'id_user' => $this->session->userdata('id'),
-            'tanggal_validasi' => time(),
-        );
-        $this->db->insert('invoice_payed', $data_validasi);
-
-        $this->session->set_flashdata(
-            "notif_delete",
-            "setTimeout(function() {
-                var notification = new NotificationFx({
-                    message: '<span ' + span + '></span><p>Pembayaran Invoice Telah Berhasil Divalidasi!</p>',
-                    layout: 'bar',
-                    effect: 'slidetop',
-                    type: 'notice',
-                });
-                notification.show();
-            }, 1200);
-            this.disabled = true;
-			"
-        );
-        redirect('transaksi/detail_invoice/' . $id);
-    }
-
 
     public function scan_ba()
     {
         if (!$this->input->post('id_ba')) {
-            $data['title'] = 'Scan Berita Acara';
+            $data['title'] = 'Dashboard';
             $data['user'] = $this->m_global->get_user();
             $this->load->view('template/header', $data);
             $this->load->view('template/sidebar');
@@ -407,76 +419,6 @@ class Transaksi extends CI_Controller
 
                     $output['code'] = '200';
                     $output['data_ba'] = $this->m_global->get_ba_byID_join($id_ba);
-                    echo json_encode($output);
-                } else {
-                    $output['code'] = '403';
-                    echo json_encode($output);
-                }
-            } else {
-                $output['code'] = '404';
-                echo json_encode($output);
-            }
-        }
-    }
-    public function scan_invoice()
-    {
-        if (!$this->input->post('id_invoice')) {
-            $data['title'] = 'Scan Invoice';
-            $data['user'] = $this->m_global->get_user();
-            $this->load->view('template/header', $data);
-            $this->load->view('template/sidebar');
-            $this->load->view('template/topbar');
-            $this->load->view('transaksi/scan_invoice');
-            $this->load->view('template/footer');
-        } else {
-            $id_invoice = $this->input->post('id_invoice');
-            $data_invoice = $this->m_global->get_invoice_byID($id_invoice);
-            $data_custom_invoice = $this->m_global->get_Custominvoice_byID($id_invoice);
-            $data_invoice_scanned = $this->m_global->get_invoice_byID_scanned($id_invoice);
-            if ($data_custom_invoice) {
-                if ($this->session->userdata('role_id') != 1 && $this->session->userdata('role_id') != 3) {
-                    $output['code'] = '500';
-                    echo json_encode($output);
-                } else {
-                    if ($data_invoice_scanned) {
-                        $format = bin2hex(random_bytes(5));
-                        $data = [
-                            'id_scan_invoice' => $format,
-                            'id_invoice' => htmlspecialchars($this->input->post('id_invoice', true)),
-                            'id_user' => htmlspecialchars($this->input->post('id_user', true)),
-                            'tanggal_scan' => time(),
-                        ];
-                        $this->db->insert('scan_invoice', $data);
-
-                        $this->db->set('is_scanned', 1);
-                        $this->db->where('id_invoice', $id_invoice);
-                        $this->db->update('invoice');
-
-                        $output['code'] = '201';
-                        $output['data_invoice'] = $this->m_global->get_custominvoice_byID_join($id_invoice);
-                        echo json_encode($output);
-                    } else {
-                        $output['code'] = '403';
-                        echo json_encode($output);
-                    }
-                }
-            } else if ($data_invoice) {
-                if ($data_invoice_scanned) {
-                    $format = bin2hex(random_bytes(5));
-                    $data = [
-                        'id_scan_invoice' => $format,
-                        'id_invoice' => htmlspecialchars($this->input->post('id_invoice', true)),
-                        'id_user' => htmlspecialchars($this->input->post('id_user', true)),
-                        'tanggal_scan' => time(),
-                    ];
-                    $this->db->insert('scan_invoice', $data);
-
-                    $this->db->set('is_scanned', 1);
-                    $this->db->where('id_invoice', $id_invoice);
-                    $this->db->update('invoice');
-
-                    $output['code'] = '200';
-                    $output['data_invoice'] = $this->m_global->get_invoice_byID_join($id_invoice);
                     echo json_encode($output);
                 } else {
                     $output['code'] = '403';

@@ -323,4 +323,22 @@ $(document).ready(function() {
         window.localStorage.removeItem('show_notif_rekap_invoice');
     }
 
+    if (window.localStorage.getItem('show_notif_addBiayaTambahan') == 'true') {
+        setTimeout(function() {
+            // create the notification
+            var notification = new NotificationFx_danger({
+                message: '<span class="typcn typcn-tick" style="font-size:30px"></span><p>Sukses Menambahkan Biaya Tambahan!</p>',
+                layout: 'bar',
+                effect: 'slidetop',
+                type: 'notice', // notice, warning or error
+            });
+            // show the notification
+            notification.show();
+        }, 1200);
+        // disable the button (for demo purposes only)
+        this.disabled = true;
+
+        window.localStorage.removeItem('show_notif_addBiayaTambahan');
+    }
+
 });

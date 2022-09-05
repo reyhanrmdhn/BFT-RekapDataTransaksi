@@ -74,12 +74,21 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for=""> Silahkan Pilih :</label>
-                            <select class="form-control custom-select basic-single required" name="metode" id="metode" style="width: 100%; height:36px;">
+                            <select class="form-control custom-select basic-single required" name="tipe_ba" id="tipe_ba" style="width: 100%; height:36px;">
                                 <option value="">Select</option>
                                 <option value="fcl">FCL</option>
                                 <option value="lcl">LCL</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="col-md-12 lcl" style="display: none;">
+                        <div class="form-group">
+                            <label for=""> Plih No Container :</label>
+                            <select class="form-control custom-select basic-single required lcl_no_container" name="lcl_NoContainer" id="lcl_NoContainer" style="width: 100%; height:36px;">
+                            </select>
+                        </div>
+                        <br>
+                        <p class="test"></p>
                     </div>
                 </div>
             </section>
@@ -92,11 +101,6 @@
                         <div class="form-group">
                             <label for=""> Nama Pelanggan :</label>
                             <select class="form-control custom-select basic-single required" name="id_pelanggan" id="pelanggan" style="width: 100%; height:36px;">
-                                <option value="">Select</option>
-                                <?php foreach ($pelanggan as $p) : ?>
-                                    <option value="<?= $p['id_pelanggan'] ?>"><?= $p['nama_pelanggan']; ?></option>
-                                <?php endforeach; ?>
-
                             </select>
                         </div>
                     </div>
@@ -133,7 +137,7 @@
             <h6>Berita Acara</h6>
             <section>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for=""> Layanan :</label>
                             <select class="select2 form-control custom-select required" name="id_layanan" id="layanan" style="width: 100%; height:36px;">
@@ -145,34 +149,59 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label for="">No. Berita Acara :</label>
                             <input type="text" class="form-control" name="no_ba" id="no_ba" readonly>
+                            <p class="validate_ba"></p>
+                            <input type="hidden" id="auto_ba">
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <label for="">&nbsp;</label>
+                        <div class="form-check mt-2">
+                            <label class="form-check-label"><input class="form-check-input" type="checkbox" id="custom_no_ba">Custom</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">Barang Yang Diserahkan :</label>
-                            <input type="text" class="form-control" name="barang">
+                            <input type="text" class="form-control" name="barang" value="Container" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="">Size :</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="size" id="size" placeholder="Ketik Disini...">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Feet</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">No. Container :</label>
-                            <input type="text" class="form-control required" name="no_container">
+                            <input type="text" class="form-control required" name="no_container" id="no_container" placeholder="Ketik Disini...">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">Commodity :</label>
-                            <input type="text" class="form-control required" name="commodity">
+                            <input type="text" class="form-control required" name="commodity" placeholder="Ketik Disini...">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">Ex Kapal :</label>
-                            <input type="text" class="form-control required" name="ex_kapal">
+                            <input type="text" class="form-control required" name="ex_kapal" id="ex_kapal" placeholder="Ketik Disini...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="">Voyager :</label>
+                            <input type="text" class="form-control required" name="voyager" id="voyager" placeholder="Ketik Disini...">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -181,10 +210,16 @@
                             <input type="date" class="form-control required" name="tgl_sandar">
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="">Jumlah Muatan :</label>
+                            <input type="text" class="form-control required" name="jumlah_muatan" placeholder="Ketik Disini...">
+                        </div>
+                    </div>
+                    <div class=" col-md-12">
                         <div class="form-group">
                             <label for="">Lokasi Bongkar :</label>
-                            <textarea class="form-control" name="lokasi_bongkar" id="lokasi_bongkar" rows="3"></textarea>
+                            <textarea class="form-control" name="lokasi_bongkar" id="lokasi_bongkar" rows="3" placeholder="Ketik Disini atau Centang Dibawah..."></textarea>
                         </div>
                         <div class="form-check">
                             <label class="form-check-label"><input class="form-check-input" type="checkbox" id="sesuai_data_pelanggan">Sesuai Alamat Pelanggan</label>

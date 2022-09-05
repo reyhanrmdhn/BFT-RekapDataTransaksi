@@ -95,7 +95,7 @@
             var id_layanan = $('#id_layanan<?= $l['id_layanan'] ?>').val();
 
             $.ajax({
-                url: baseURL + "settings/crosscheck_inputCustomRate",
+                url: baseURL + "finance/crosscheck_inputCustomRate",
                 method: "POST",
                 data: {
                     id_vendor: id_vendor,
@@ -140,6 +140,7 @@
         var tahun_ba = <?= date('Y') ?>;
         var berita_acara = urutan_ba + '/INB/' + bulan_ba + '/' + tahun_ba;
         $('#no_ba').val(berita_acara);
+        $('#auto_ba').val(berita_acara);
 
     });
 </script>

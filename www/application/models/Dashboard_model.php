@@ -162,6 +162,15 @@ class Dashboard_model extends CI_Model
         $this->db->limit(5);
         return $this->db->get()->result_array();
     }
+    public function get_dataINV_Max5()
+    {
+        $this->db->select('*');
+        $this->db->from('invoice');
+        $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
+        $this->db->order_by('tanggal_invoice', 'DESC');
+        $this->db->limit(5);
+        return $this->db->get()->result_array();
+    }
 
     public function get_data_vendor()
     {

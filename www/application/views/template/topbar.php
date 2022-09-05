@@ -8,39 +8,37 @@
             <!--/.sidebar toggle icon-->
             <div class="d-flex flex-grow-1">
                 <ul class="navbar-nav flex-row align-items-center ml-auto">
-                    <!-- <li class="nav-item dropdown quick-actions">
+
+                    <li class="nav-item dropdown quick-actions">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
                             <i class="typcn typcn-th-large-outline"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <div class="nav-grid-row row">
-                                <a href="#" class="icon-menu-item col-4">
-                                    <i class="typcn typcn-cog-outline d-block"></i>
-                                    <span>Settings</span>
-                                </a>
-                                <a href="#" class="icon-menu-item col-4">
-                                    <i class="typcn typcn-group-outline d-block"></i>
-                                    <span>Users</span>
-                                </a>
-                                <a href="#" class="icon-menu-item col-4">
-                                    <i class="typcn typcn-puzzle-outline d-block"></i>
-                                    <span>Components</span>
-                                </a>
-                                <a href="#" class="icon-menu-item col-4">
-                                    <i class="typcn typcn-chart-bar-outline d-block"></i>
-                                    <span>Profits</span>
-                                </a>
-                                <a href="#" class="icon-menu-item col-4">
-                                    <i class="typcn typcn-time d-block"></i>
-                                    <span>New Event</span>
-                                </a>
-                                <a href="#" class="icon-menu-item col-4">
-                                    <i class="typcn typcn-edit d-block"></i>
-                                    <span>Tasks</span>
-                                </a>
+                                <?php if ($user['role_id'] == 1) { ?>
+                                    <a href="<?= base_url('transaksi/scan_ba') ?>" class="icon-menu-item col-6">
+                                        <i class="fas fa-barcode d-block"></i>
+                                        <span>Scan Berita Acara</span>
+                                    </a>
+                                    <a href="<?= base_url('finance/scan_invoice') ?>" class="icon-menu-item col-6">
+                                        <i class="fas fa-barcode d-block"></i>
+                                        <span>Scan Invoice</span>
+                                    </a>
+                                <?php } else if ($user['role_id'] == 2) { ?>
+                                    <a href="<?= base_url('transaksi/scan_ba') ?>" class="icon-menu-item col-12">
+                                        <i class="fas fa-barcode d-block"></i>
+                                        <span>Scan Berita Acara</span>
+                                    </a>
+                                <?php } else if ($user['role_id'] == 3) { ?>
+                                    <a href="<?= base_url('finance/scan_invoice') ?>" class="icon-menu-item col-12">
+                                        <i class="fas fa-barcode d-block"></i>
+                                        <span>Scan Invoice</span>
+                                    </a>
+                                <?php } ?>
                             </div>
                         </div>
-                    </li> -->
+                    </li>
+
                     <!--/.dropdown-->
                     <!-- <li class="nav-item dropdown notification">
                         <a class="nav-link dropdown-toggle badge-dot" href="#" data-toggle="dropdown">

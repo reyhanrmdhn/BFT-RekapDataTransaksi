@@ -23,7 +23,7 @@
             <li class="nav-item col-lg-3">
                 <a class="nav-link p-0 active" data-toggle="pill" href="#semuadata" role="tab">
                     <!--Active users indicator-->
-                    <div class="bg-success text-white rounded mb-3 p-3 shadow-sm text-center">
+                    <div class="menu-kotak text-white rounded  p-3 text-center">
                         <div class="header-pretitle font-weight-bold text-uppercase">Semua Data</div>
                         <div class="fs-38 text-monospace"><?= $data_baNUM; ?></div>
                     </div>
@@ -32,7 +32,7 @@
             <li class="nav-item col-lg-3">
                 <a class="nav-link p-0" data-toggle="pill" href="#diproses" role="tab">
                     <!--Active users indicator-->
-                    <div class="bg-warning text-white rounded mb-3 p-3 shadow-sm text-center">
+                    <div class="text-white rounded  p-3 text-center">
                         <div class="header-pretitle font-weight-bold text-uppercase">Sedang Diproses</div>
                         <div class="fs-38 text-monospace"><?= $data_ba_notScannedNUM; ?></div>
                     </div>
@@ -41,7 +41,7 @@
             <li class="nav-item col-lg-3">
                 <a class="nav-link p-0" data-toggle="pill" href="#discan" role="tab">
                     <!--Active users indicator-->
-                    <div class="bg-danger text-white rounded mb-3 p-3 shadow-sm text-center">
+                    <div class="text-white rounded  p-3 text-center">
                         <div class="header-pretitle font-weight-bold text-uppercase">Telah Di-Scan</div>
                         <div class="fs-38 text-monospace"><?= $data_ba_ScannedNUM; ?></div>
                     </div>
@@ -50,7 +50,7 @@
             <li class="nav-item col-lg-3">
                 <a class="nav-link p-0" data-toggle="pill" href="#invoice" role="tab">
                     <!--Active users indicator-->
-                    <div class="bg-info text-white rounded mb-3 p-3 shadow-sm text-center">
+                    <div class="text-white rounded  p-3 text-center">
                         <div class="header-pretitle font-weight-bold text-uppercase">Invoice Dicetak</div>
                         <div class="fs-38 text-monospace"><?= $data_ba_invoiceNUM; ?></div>
                     </div>
@@ -89,6 +89,7 @@
                                     <th>No</th>
                                     <th>Nama Vendor</th>
                                     <th>No. Berita Acara</th>
+                                    <th>Tipe</th>
                                     <th>Tanggal</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -101,6 +102,7 @@
                                         <td><?= $x; ?></td>
                                         <td><?= $ba['nama_vendor']; ?></td>
                                         <td><?= $ba['no_ba']; ?></td>
+                                        <td style="text-transform:uppercase;" class="text-center"><?= $ba['tipe_ba']; ?></td>
                                         <td style="text-align: center;"><?= date('d/F/Y', $ba['tanggal_ba']); ?></td>
                                         <td style="text-align: center;">
                                             <?php if ($ba['is_scanned'] == 0) { ?>
@@ -116,7 +118,7 @@
                                         <td style="text-align: center;">
                                             <a href="<?= base_url('transaksi/detail/' . $ba['id_ba']) ?>" class="btn btn-info-soft"><i class="ti ti-zoom-in" style="font-size: 18x"></i></a>
                                             <?php if ($ba['is_scanned'] == 1 && $ba['invoice_done'] == 0) { ?>
-                                                <button class="btn btn-success btn-invoice" data-id_vendor="<?= $ba['id_vendor'] ?>">Cetak Invoice</button>
+                                                <button class="btn btn-success btn-invoice" data-id_vendor="<?= $ba['id_vendor'] ?>" data-tipe_ba="<?= $ba['tipe_ba'] ?>" data-no_container="<?= $ba['no_container'] ?>">Cetak Invoice</button>
                                             <?php } ?>
                                         </td>
                                     </tr>
@@ -386,57 +388,6 @@
                     <button type="submit" class="btn btn-success btn-block">Cetak Invoice</button>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-
-
-<div aria-hidden="true" class="onboarding-modal modal fade animated" id="invoiceModal" role="dialog" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-centered" role="document">
-        <div class="modal-content text-center">
-            <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span class="close-label"></span><span class="os-icon os-icon-close"></span></button>
-            <div class="onboarding-side-by-side">
-                <div class="onboarding-media">
-                    <img alt="" src="/assets/img/icons/invoice.png" width="200px">
-                </div>
-                <div class="onboarding-content with-gradient">
-                    <h4 class="onboarding-title">
-                        Cetak Invoice
-                    </h4>
-                    <div class="onboarding-text">
-                        Silahkan memilih Berita Acara untuk dicetak Invoice
-                    </div>
-                    <form action="<?= base_url('transaksi/input_invoice') ?>" method="POST">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label for="">Nama Pelanggan</label>
-                                    <input class="form-control nama_pelanggan" type="text" readonly>
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label for="">No. Invoice</label>
-                                    <input class="form-control no_invoice" type="text" readonly name="no_invoice">
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label for="">Berita Acara</label>
-                                    <div class="label_berita_acara">
-                                    </div>
-                                    <input type="hidden" name="id_pelanggan" class="id_pelanggan">
-                                    <input type="hidden" name="id_vendor" class="id_vendor">
-                                    <input type="hidden" name="id_layanan" class="id_layanan">
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <button type="submit" class="btn btn-primary btn-block">Cetak Invoice</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 </div>

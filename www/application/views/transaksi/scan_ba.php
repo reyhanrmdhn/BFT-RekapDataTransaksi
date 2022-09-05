@@ -45,7 +45,7 @@
                             </tr>
                         </thead>
                         <tbody id="data_ba_scanned">
-                            <tr>
+                            <tr class="temp_data">
                                 <td colspan="4" style="text-align: center">Data Akan Muncul Setelah Di-scan</td>
                                 <td style="display: none;"></td>
                                 <td style="display: none;"></td>
