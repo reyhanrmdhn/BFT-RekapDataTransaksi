@@ -381,7 +381,7 @@ function terbilang($nilai)
             $no_invoice_download = str_replace("/", "-", $invoice['no_invoice']);
             ?>
             <button id="downloadINV" type="button" class="btn btn-success" style="border-radius: 0px" data-id="<?= $no_invoice_download; ?>"><i class="ti ti-download"></i>&nbsp;Download Invoice</button>
-            <div style="padding:20px 50px 0px 50px;font-family:'Times New Roman';" id="invoice">
+            <div style="padding:20px 50px 0px 50px;font-family:'Times New Roman';height: 290mm;" id="invoice">
                 <div>
                     <!-- kopsurat -->
                     <table style="text-align:left;width:100%;line-height:15px;font-size: 14px;">
@@ -614,36 +614,9 @@ function terbilang($nilai)
 
                     </div>
 
-                    <?php if ($x > 4) { ?>
-                        <div class="row">
-                            <div class="col-md-12" style="padding:80px 0 80px 0">
-                            </div>
-                        </div>
-                    <?php } else if ($x > 3) { ?>
-                        <div class="row">
-                            <div class="col-md-12" style="padding:90px 0 90px 0">
-                            </div>
-                        </div>
-                    <?php } else if ($x > 2) { ?>
-                        <div class="row">
-                            <div class="col-md-12" style="padding:100px 0 100px 0">
-                            </div>
-                        </div>
-                    <?php } else if ($x > 1) { ?>
-                        <div class="row">
-                            <div class="col-md-12" style="padding:120px 0 120px 0">
-                            </div>
-                        </div>
-                    <?php } else { ?>
-                        <div class="row">
-                            <div class="col-md-12" style="padding:150px 0 150px 0">
-                            </div>
-                        </div>
-                    <?php } ?>
-
                     <!-- invoice info -->
-                    <div class="row">
-                        <div class="col-md-8" style="text-align: left">
+                    <div class="row" style="position:absolute;bottom:0;width:90%">
+                        <div class="col-md-8">
                             <div class="col-sm-12">
                                 <table style="text-align:left;width:100%;line-height:15px;font-size: 14px;">
                                     <tr>
@@ -696,11 +669,6 @@ function terbilang($nilai)
                                     <td>Fitri Widiarti</td>
                                 </tr>
                             </table>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12" style="padding:2px 0 0px 0">
                         </div>
                     </div>
                 </div>

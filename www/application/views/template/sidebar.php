@@ -9,7 +9,7 @@
         <!--/.sidebar header-->
         <div class="profile-element d-flex align-items-center flex-shrink-0">
             <div class="avatar">
-                <img src="<?= base_url() ?>assets/img/<?= $user['image'] ?>" class="img-fluid rounded-circle" alt="">
+                <img src="<?= base_url() ?>assets/img/<?= $user['image'] ?>" class="rounded-circle" alt="" style="width:40px;height:40px">
             </div>
             <div class="profile-text">
                 <h6 class="m-0"><?= $user['name']; ?></h6>

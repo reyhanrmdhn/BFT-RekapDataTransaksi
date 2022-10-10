@@ -23,7 +23,7 @@
             <li class="nav-item col-lg-3">
                 <a class="nav-link p-0 active" data-toggle="pill" href="#semuadata" role="tab">
                     <!--Active users indicator-->
-                    <div class="bg-info text-white rounded mb-3 p-3 shadow-sm text-center">
+                    <div class="text-white rounded p-3 shadow-sm text-center">
                         <div class="header-pretitle font-weight-bold text-uppercase">Semua Data</div>
                         <div class="fs-38 text-monospace"><?= $data_custInvoiceNUM; ?></div>
                     </div>
@@ -32,7 +32,7 @@
             <li class="nav-item col-lg-3">
                 <a class="nav-link p-0" data-toggle="pill" href="#discan" role="tab">
                     <!--Active users indicator-->
-                    <div class="bg-danger text-white rounded mb-3 p-3 shadow-sm text-center">
+                    <div class="text-white rounded p-3 shadow-sm text-center">
                         <div class="header-pretitle font-weight-bold text-uppercase">Belum Di-Scan</div>
                         <div class="fs-38 text-monospace"><?= $data_custInvoiceScannedNUM; ?></div>
                     </div>
@@ -41,7 +41,7 @@
             <li class="nav-item col-lg-3">
                 <a class="nav-link p-0" data-toggle="pill" href="#proses" role="tab">
                     <!--Active users indicator-->
-                    <div class="bg-warning text-white rounded mb-3 p-3 shadow-sm text-center">
+                    <div class="text-white rounded p-3 shadow-sm text-center">
                         <div class="header-pretitle font-weight-bold text-uppercase">Sedang Diproses</div>
                         <div class="fs-38 text-monospace"><?= $data_custInvoiceProsesNUM; ?></div>
                     </div>
@@ -50,7 +50,7 @@
             <li class="nav-item col-lg-3">
                 <a class="nav-link p-0" data-toggle="pill" href="#payed" role="tab">
                     <!--Active users indicator-->
-                    <div class="bg-success text-white rounded mb-3 p-3 shadow-sm text-center">
+                    <div class="text-white rounded p-3 shadow-sm text-center">
                         <div class="header-pretitle font-weight-bold text-uppercase">Telah Dibayar</div>
                         <div class="fs-38 text-monospace"><?= $data_custInvoicePayedNUM; ?></div>
                     </div>

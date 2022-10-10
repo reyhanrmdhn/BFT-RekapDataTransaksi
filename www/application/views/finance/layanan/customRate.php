@@ -36,19 +36,58 @@
                                 <th>No</th>
                                 <th>Pelanggan</th>
                                 <th>Rate</th>
+                                <th>Size</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php $x = 1; ?>
+                            <?php
+                            $data_customRate = $this->m_global->get_customRate($id_vendor, $id_layanan);
+                            ?>
                             <?php foreach ($data_customRate as $custom_rate) : ?>
                                 <!-- Data tabel muncul di semua tabel secara dinamis -->
                                 <tr>
-                                    <td style="width:5%"><?= $x; ?></td>
-                                    <td style="text-align:left"><?= $custom_rate['nama_pelanggan']; ?></td>
-                                    <td style="text-align:left">Rp. <?= number_format($custom_rate['rate']); ?></td>
-                                    <td>
-                                        <button class="btn btn-warning-soft editLayananCustom" data-id="<?= $custom_rate['id_layanan_join'] ?>" data-layanan="<?= $custom_rate['layanan'] ?>" data-vendor="<?= $custom_rate['nama_vendor'] ?>" data-pelanggan="<?= $custom_rate['nama_pelanggan'] ?>" data-rate="<?= $custom_rate['rate'] ?>"><i class="ti ti-pencil"></i></button>
+                                    <td style="width:5%;vertical-align: middle"><?= $x; ?></td>
+                                    <?php
+                                    if (strpos($custom_rate['id_pelanggan'], ';') !== false) {
+                                        $p = explode(';', $custom_rate['id_pelanggan']);
+                                    ?>
+                                        <td style="text-align:left;vertical-align: middle">
+                                            <?php
+                                            $count = count($p);
+                                            $loop = 1;
+                                            $nama_pelanggan = '';
+                                            foreach ($p as $r) {
+                                                $pelanggan = $this->m_global->get_pelangganbyID($r);
+                                                if ($loop == $count) {
+                                                    $nama_pelanggan = $nama_pelanggan . $pelanggan['nama_pelanggan'];
+                                                    echo $pelanggan['nama_pelanggan'];
+                                                } else {
+                                                    $nama_pelanggan = $nama_pelanggan . $pelanggan['nama_pelanggan'] . ', ';
+                                                    echo $pelanggan['nama_pelanggan']  . ', ';
+                                                }
+                                                $loop++;
+                                            }
+                                            ?>
+                                        </td>
+                                    <?php
+                                    } else { ?>
+                                        <td style="text-align:left;vertical-align: middle">
+                                            <?php
+                                            $pelanggan = $this->m_global->get_pelangganbyID($custom_rate['id_pelanggan']);
+                                            $nama_pelanggan = $pelanggan['nama_pelanggan'];
+                                            echo  $pelanggan['nama_pelanggan'];
+                                            ?>
+                                        </td>
+                                    <?php } ?>
+                                    <td style="text-align:left;vertical-align: middle">Rp. <?= number_format($custom_rate['rate']); ?></td>
+                                    <td style="text-align:left;vertical-align: middle"><?= $custom_rate['size'] ?> Feet</td>
+                                    <td style="vertical-align: middle">
+                                        <?php if ($custom_rate['keterangan'] != NULL) { ?>
+                                            <button class="btn btn-info-soft showKeteranganCustomRate" data-keterangan="<?= $custom_rate['keterangan'] ?>"><i class="ti ti-eye"></i></button>
+                                        <?php } ?>
+                                        <button class="btn btn-warning-soft editLayananCustom" data-id="<?= $custom_rate['id_layanan_join'] ?>" data-layanan="<?= $custom_rate['layanan'] ?>" data-vendor="<?= $custom_rate['nama_vendor'] ?>" data-pelanggan="<?= $nama_pelanggan; ?>" data-rate="<?= $custom_rate['rate'] ?>" data-keterangan="<?= $custom_rate['keterangan'] ?>"><i class="ti ti-pencil"></i></button>
                                         <button class="btn btn-danger-soft md-trigger" data-modal="deleteCustomRate<?= $custom_rate['id_layanan_join'] ?>"><i class="ti ti-trash"></i></button>
                                     </td>
                                 </tr>
@@ -158,11 +197,35 @@
                         <label for="">Rate (IDR)</label>
                         <input class="form-control number rate" placeholder="Masukkan Harga" name="rate">
                     </div>
+
+                    <div class="form-group">
+                        <label for="">Keterangan</label>
+                        <textarea class="form-control editKeterangan" rows="3" name="keterangan"></textarea>
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-success">Edit Layanan</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="keteranganModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-600" style="margin-left:auto">Keterangan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <textarea name="keterangan" id="keterangan" class="form-control keterangan" rows="5" readonly></textarea>
+                </div>
+
             </div>
         </div>
     </div>

@@ -289,9 +289,6 @@
                                         </td>
                                         <td style="text-align: center;">
                                             <a href="<?= base_url('transaksi/detail/' . $ba['id_ba']) ?>" class="btn btn-info-soft"><i class="ti ti-zoom-in" style="font-size: 18x"></i></a>
-                                            <?php if ($ba['is_scanned'] == 1 && $ba['invoice_done'] == 0) { ?>
-                                                <button class="btn btn-success btn-invoice" data-id_vendor="<?= $ba['id_vendor'] ?>">Cetak Invoice</button>
-                                            <?php } ?>
                                         </td>
                                     </tr>
                                     <?php $x++; ?>

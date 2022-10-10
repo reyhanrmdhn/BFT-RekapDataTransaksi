@@ -1,10 +1,8 @@
 window.onload = function() {
     document.getElementById("download")
         .addEventListener("click", () => {
-            const invoice = this.document.getElementById("invoice");
+            const invoice = this.document.getElementById("berita_acara");
             var no_ba = this.document.getElementById("download").dataset.no_ba;
-            console.log(invoice);
-            console.log(window);
             var opt = {
                 margin: 0.1,
                 filename: no_ba+'.pdf',
@@ -13,11 +11,14 @@ window.onload = function() {
                     quality: 1
                 },
                 html2canvas: {
-                    scale: 4
+                    dpi: 192,
+                    scale:4,
+                    letterRendering: true,
+                    useCORS: true
                 },
                 jsPDF: {
                     unit: 'in',
-                    format: 'legal',
+                    format: 'letter',
                     orientation: 'portrait'
                 }
             };

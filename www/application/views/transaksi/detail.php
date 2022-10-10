@@ -1,3 +1,4 @@
+<input type="hidden" id="is_scanned" value="<?= $ba_detail['is_scanned']; ?>">
 <!--Content Header (Page header)-->
 <div class="content-header row align-items-center m-0">
     <nav aria-label="breadcrumb" class="col-sm-4 order-sm-last mb-3 mb-sm-0 p-0 ">
@@ -20,10 +21,11 @@
 <!--/.Content Header (Page header)-->
 <div class="body-content">
     <button class="btn btn-success-soft" onclick="goBack()"><i class="typcn typcn-arrow-back"></i>&nbsp;Back</button>
-    <div class="row">
+    <div class="row" id="data_ba">
+        <!-- TIMELINE -->
         <div class="col-md-12 mt-2 mb-3">
             <div class="card p-4">
-                <ul class="timeline" id="timeline">
+                <ul class="timeline" id="timeline" style="margin-left: -10px;margin-right:auto">
                     <li class="li complete">
                         <div class="timestamp">
                             <span class="author"><?= $ba_detail['name']; ?></span>
@@ -108,119 +110,164 @@
                 </ul>
             </div>
         </div>
+
+        <!-- TABEL BA -->
         <div class="col-md-8">
             <div class="card p-4">
-                <table style="width: 100%; font-size:15px" cellpadding="5">
-                    <tr>
-                        <th style="width: 25%;">No. Berita Acara</th>
-                        <td>:</td>
-                        <td>
-                            <span style="margin-left:30px"><?= $ba_detail['no_ba']; ?></span>
+                <style>
+                    .bb-1:not(:last-child) {
+                        border-bottom: 1px solid #28A745;
+                    }
+
+                    .vt {
+                        vertical-align: top;
+                        font-weight: bold;
+                    }
+
+                    .v-top {
+                        vertical-align: top;
+                        width: auto;
+                    }
+                </style>
+                <table cellpadding="5" style="width: 100%;font-size: 15px;">
+                    <tr class="bb-1">
+                        <th style="width:30%" class="vt">No. Berita Acara</th>
+                        <td class="vt">:</td>
+                        <td class="v-top">
+                            <span style="font-weight: bold"><?= $ba_detail['no_ba']; ?></span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="bb-1">
                         <th>Tipe</th>
-                        <td>:</td>
-                        <td>
-                            <span style="margin-left:30px;text-transform:uppercase"><?= $ba_detail['tipe_ba']; ?></span>
+                        <td class="vt">:</td>
+                        <td class="v-top">
+                            <span style="text-transform:uppercase"><?= $ba_detail['tipe_ba']; ?></span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="bb-1">
                         <th>Barang</th>
-                        <td>:</td>
-                        <td>
-                            <span style="margin-left:30px"><?= $ba_detail['barang']; ?></span>
+                        <td class="vt">:</td>
+                        <td class="v-top">
+                            <span><?= $ba_detail['barang']; ?></span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="bb-1">
                         <th>Size</th>
-                        <td>:</td>
-                        <td>
-                            <span style="margin-left:30px"><?= $ba_detail['size']; ?> Feet</span>
+                        <td class="vt">:</td>
+                        <td class="v-top">
+                            <span><?= $ba_detail['size']; ?> Feet</span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="bb-1">
                         <th>No. Container</th>
-                        <td>:</td>
-                        <td>
-                            <span style="margin-left:30px"><?= $ba_detail['no_container']; ?></span>
+                        <td class="vt">:</td>
+                        <td class="v-top">
+                            <span><?= $ba_detail['no_container']; ?></span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="bb-1">
                         <th>Commodity</th>
-                        <td>:</td>
-                        <td>
-                            <span style="margin-left:30px"><?= $ba_detail['commodity']; ?></span>
+                        <td class="vt">:</td>
+                        <td class="v-top">
+                            <span><?= $ba_detail['commodity']; ?></span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="bb-1">
                         <th>Ex Kapal</th>
-                        <td>:</td>
-                        <td>
-                            <span style="margin-left:30px"><?= $ba_detail['ex_kapal'] . " " . $ba_detail['voyager'] ?></span>
+                        <td class="vt">:</td>
+                        <td class="v-top">
+                            <span><?= $ba_detail['ex_kapal'] . " " . $ba_detail['voyager'] ?></span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="bb-1">
                         <th>Tanggal Sandar</th>
-                        <td>:</td>
-                        <td>
-                            <span style="margin-left:30px"><?= date('d-m-Y', strtotime($ba_detail['tgl_sandar'])); ?></span>
+                        <td class="vt">:</td>
+                        <td class="v-top">
+                            <span><?= date('d-m-Y', strtotime($ba_detail['tgl_sandar'])); ?></span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="bb-1">
                         <th>Jumlah Muatan</th>
-                        <td>:</td>
-                        <td>
-                            <span style="margin-left:30px"><?= $ba_detail['jumlah_muatan']; ?></span>
+                        <td class="vt">:</td>
+                        <td class="v-top">
+                            <span style="text-transform:capitalize"><?= $ba_detail['jumlah_muatan']; ?></span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="bb-1">
                         <th>Lokasi Bongkar</th>
-                        <td>:</td>
-                        <td>
-                            <span style="margin-left:30px"><?= $ba_detail['lokasi_bongkar']; ?></span>
+                        <td class="vt">:</td>
+                        <td class="v-top">
+                            <span><?= $ba_detail['lokasi_bongkar']; ?></span>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
+
+        <!-- TABEL INFO -->
         <div class="col-md-4">
             <div class="card p-4">
                 <table style="width: 100%; font-size:15px" cellpadding="5">
-                    <tr>
-                        <td style="width: 20%;">Vendor</td>
-                        <td>:</td>
+                    <tr class="bb-1">
+                        <th style="width: 20%;">Vendor</th>
                         <td>
-                            <span><?= $ba_detail['nama_vendor']; ?></span>
+                            <span><b>:</b>&nbsp;<?= $ba_detail['nama_vendor']; ?></span>
                         </td>
                     </tr>
-                    <tr>
-                        <td>Pelanggan</td>
-                        <td>:</td>
+                    <tr class="bb-1">
+                        <th>Pelanggan</th>
                         <td>
-                            <span><?= $ba_detail['nama_pelanggan']; ?></span>
+                            <span><b>:</b>&nbsp;<?= $ba_detail['nama_pelanggan']; ?></span>
                         </td>
                     </tr>
-                    <tr>
-                        <td>Layanan</td>
-                        <td>:</td>
+                    <tr class="bb-1">
+                        <th>Layanan</th>
                         <td>
-                            <span><?= $ba_detail['layanan']; ?></span>
+                            <span><b>:</b>&nbsp;<?= $ba_detail['layanan']; ?></span>
                         </td>
                     </tr>
                 </table>
-
+            </div>
+            <div class="card py-1 px-4 mt-2">
+                <table style="width: 100%;" cellpadding="5">
+                    <tr>
+                        <th style="width: 30%;font-size:15px;vertical-align:middle">Status</th>
+                        <td>
+                            <?php if ($ba_detail['is_scanned'] == 0) { ?>
+                                <span><b>:</b>&nbsp;<span class="badge badge-warning" style="font-size: 15px">Sedang Diproses</span></span> <?php } ?>
+                            <?php if ($ba_detail['is_scanned'] == 1 && $ba_detail['invoice_done'] == 0) { ?>
+                                <span><b>:</b>&nbsp;<span class="badge badge-danger" style="font-size: 15px">Telah Di-Scan</span></span> <?php } ?>
+                            <?php if ($ba_detail['invoice_done'] == 1 && $ba_detail['invoice_done'] == 1) { ?>
+                                <span><b>:</b>&nbsp;<span class="badge badge-info" style="font-size: 15px">Invoice Dicetak</span></span> <?php } ?>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <?php if ($btn_invoice) { ?>
-                <div class="card p-4 mt-3 text-center">
-                    <p class="mb-1" style="font-weight: 600;font-size:18px">No. Invoice :</p>
-                    <p class="mb-0" style="font-weight: 600;font-size:23px"><?= $btn_invoice['no_invoice']; ?></p>
+                <div class="card py-1 px-4 mt-2">
+                    <table style="width: 100%;" cellpadding="5">
+                        <tr>
+                            <th style="width: 30%;font-size:15px;vertical-align:middle">Invoice</th>
+                            <td>
+                                <span><b>:</b>&nbsp;</span>
+                                <span style="font-weight: 600;color:#28A745;font-size:15px"><?= $btn_invoice['no_invoice']; ?></span>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             <?php } ?>
-            <button class="btn btn-success btn-lg btn-block btn-modal-ba mx-auto mt-3" data-target="#BAmodal" data-toggle="modal"><i class="ti ti-import"></i>&nbsp;&nbsp;Download Berita Acara <br>
+            <button class="btn btn-inverse btn-lg btn-block btn-modal-ba mx-auto mt-2" data-target="#BAmodal" data-toggle="modal"><i class="ti ti-import"></i>&nbsp;&nbsp;Download Berita Acara <br>
                 <span class="mt-3 mb-0" style="font-size: 12px;">Didownload : <span id="ba_num_download"><?= $ba_num_download; ?></span> Kali</span>
             </button>
+            <button class="btn btn-warning btn-lg btn-block mx-auto mt-2" id="btnEditBA">
+                <i class="ti ti-pencil"></i>
+                &nbsp;Edit Data Transaksi
+            </button>
         </div>
+    </div>
+
+    <div id="edit_ba" style="display: none">
+        <?php include "edit_ba.php"; ?>
     </div>
 
 </div>
@@ -228,6 +275,7 @@
 </div>
 <!--/.main content-->
 
+<!-- MODAL BA -->
 <div aria-hidden="true" class="modal fade" id="BAmodal" role="dialog" tabindex="-1">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content text-center">
@@ -237,9 +285,9 @@
             <button id="download" data-no_ba="<?= $no_ba_download ?>" type="button" class="btn btn-success" style="border-radius:0px;"><i class="ti ti-download"></i>&nbsp;&nbsp;Download Berita Acara</button>
             <input type="hidden" id="id_ba" value="<?= $ba_detail['id_ba'] ?>">
             <input type="hidden" id="id_user" value="<?= $user['id'] ?>">
-            <div style="padding:20px 0px 0px 0px" id="invoice">
+            <div style="padding:5px 20px 5px 20px;height:10.5in;" id="berita_acara">
                 <div>
-                    <table width="90%" class="mx-auto mt-1" style="border-bottom: 2px solid black;">
+                    <table able width="95%" class="mx-auto" style="border-bottom: 2px solid black;">
                         <tr>
                             <td style="width:15%;text-align:left;">
                                 <img src="/assets/img/logo.png" alt="" style="width: 120px;">
@@ -254,21 +302,19 @@
                         </tr>
                     </table>
 
-                    <br>
-                    <table width="81%" class="mx-auto" style="color:black;font-family:Times New Roman;">
+                    <table width="90%" class="mx-auto" style="color:black;font-family:Times New Roman;margin-top:20px">
                         <tr>
-                            <td style="font-size:30px;color:black;font-weight:bold;text-align:center">BERITA ACARA SERAH TERIMA</td>
+                            <td style="font-size:28px;color:black;font-weight:bold;text-align:center;">BERITA ACARA SERAH TERIMA</td>
                         </tr>
                         <tr>
-                            <td style="font-size:20px;color:black;font-weight:bold;text-align:center;padding:0px 0 10px 0">No. : <?= $ba_detail['no_ba']; ?></td>
+                            <td style="font-size:20px;color:black;font-weight:bold;text-align:center;padding:0px 0 30px 0;line-height:0.8">No. : <?= $ba_detail['no_ba']; ?></td>
                         </tr>
                         <tr>
-                            <td style="font-size:20px;text-align:justify">Bersama ini kami menyerahkan 1 x <?= $ba_detail['size']; ?> Feet <span style="text-transform:uppercase">(<?= $ba_detail['tipe_ba']; ?>)</span> dengan data sebagai berikut, </td>
+                            <td style="font-size:18px;text-align:justify">Bersama ini kami menyerahkan 1 x <?= $ba_detail['size']; ?> Feet <span style="text-transform:uppercase">(<?= $ba_detail['tipe_ba']; ?>)</span> dengan data sebagai berikut, </td>
                         </tr>
                     </table>
 
-                    <br>
-                    <table width="81%" class="mx-auto" style="color:black;font-size:19px;font-family:Times New Roman;text-align:left">
+                    <table width="90%" class="mx-auto" style="margin-top:10px;color:black;font-size:18px;font-family:Times New Roman;text-align:left">
                         <tr>
                             <td style="width: 35%;">1. &nbsp;&nbsp;Yang menyerahkan</td>
                             <td style="width: 3%;"> : </td>
@@ -297,7 +343,7 @@
                         <tr>
                             <td>6. &nbsp;&nbsp;Tanggal Sandar</td>
                             <td> : </td>
-                            <td><?= date('d-M-Y', strtotime($ba_detail['tgl_sandar'])); ?></td>
+                            <td><?= date('d F Y', strtotime($ba_detail['tgl_sandar'])); ?></td>
                         </tr>
                         <tr>
                             <td style="vertical-align:top">7. &nbsp;&nbsp;Lokasi Bongkar</td>
@@ -322,36 +368,36 @@
                         <tr>
                             <td>9. &nbsp;&nbsp;Jumlah Muatan</td>
                             <td> : </td>
-                            <td><?= $ba_detail['jumlah_muatan']; ?></td>
+                            <td style="text-transform:capitalize"><?= $ba_detail['jumlah_muatan']; ?></td>
                         </tr>
 
                     </table>
 
                     <br>
-                    <table width="81%" class="mx-auto" style="color:black;font-family:Times New Roman;">
+                    <table width="90%" class="mx-auto" style="color:black;font-family:Times New Roman;">
                         <tr>
-                            <td style="font-size:19px;text-align:left">Demikian Berita Acara Serah Terima ini kami buat dengan sebenar-benarnya, atas kerjasamanya yang baik diucapkan terima kasih</td>
+                            <td style="font-size:18px;text-align:left">Demikian Berita Acara Serah Terima ini kami buat dengan sebenar-benarnya, atas kerjasamanya yang baik diucapkan terima kasih</td>
                         </tr>
                     </table>
                     <br>
-                    <table width="81%" class="mx-auto" style="color:black;font-family:Times New Roman;">
+                    <table width="90%" class="mx-auto" style="color:black;font-family:Times New Roman;">
                         <tr>
-                            <td style="font-size:19px;text-align:left">Pontianak, &nbsp;<?= date('d M Y', $ba_detail['tanggal_ba']); ?>
+                            <td style="font-size:18px;text-align:left">Pontianak,&nbsp;<?= date('d F Y', $ba_detail['tanggal_ba']); ?>
                             </td>
                         </tr>
                     </table>
 
                     <br>
-                    <table width="81%" class="mx-auto" style="color:black;font-size:19px;text-align:center;font-family:Times New Roman;">
+                    <table width="90%" class="mx-auto" style="color:black;font-size:18px;text-align:center;font-family:Times New Roman;">
                         <tr>
                             <td width="30%">Yang menyerahkan</td>
                             <td width="40%"></td>
                             <td width="30%">Yang menerima</td>
                         </tr>
                         <tr>
-                            <td style="padding:50px 0 50px 0"></td>
-                            <td style="padding:50px 0 50px 0"></td>
-                            <td style="padding:50px 0 50px 0"></td>
+                            <td style="padding:35px 0 35px 0"></td>
+                            <td style="padding:35px 0 35px 0"></td>
+                            <td style="padding:35px 0 35px 0"></td>
                         </tr>
                         <tr>
                             <td>(..............................)</td>
@@ -360,52 +406,46 @@
                         </tr>
                     </table>
 
-                    <table width="81%" class="mx-auto" style="color:black;font-size:19px;text-align:center;font-family:Times New Roman;">
-                        <tr>
-                            <td style="padding:100px 0 100px 0"></td>
-                            <td style="padding:100px 0 100px 0"></td>
-                            <td style="padding:100px 0 0px 0;text-align:right"></td>
-                        </tr>
-                    </table>
+                    <div style="position:absolute;bottom:0;width:95%;padding:0 10px">
+                        <table width="95%" class="mx-auto" style="color:black;font-family:Times New Roman;">
+                            <tr>
+                                <td style="font-size:18px;text-align:left;width:12%;vertical-align:top" rowspan="2">Remarks :</td>
+                                <td style="font-size:18px;text-align:left;vertical-align:top">
+                                    <p style="margin-bottom:0px"> - Kondisi barang dalam keadaan baik dan utuh</p>
+                                    <p style="margin-bottom:0px"> - Gembok atau segel terpasang dengan baik</p>
+                                </td>
+                                <td rowspan="2" style="vertical-align:top;text-align:right">
+                                    <svg id="barcode"></svg>
+                                    <script>
+                                        JsBarcode("#barcode", "<?= $ba_detail['id_ba']; ?>", {
+                                            lineColor: "#000",
+                                            width: 1.2,
+                                            height: 50,
+                                            displayValue: false
+                                        });
+                                    </script>
+                                </td>
+                            </tr>
+                        </table>
 
-                    <table width="85%" class="mx-auto" style="color:black;font-family:Times New Roman;">
-                        <tr>
-                            <td style="font-size:19px;text-align:left;width:12%;vertical-align:top" rowspan="2">Remarks :</td>
-                            <td style="font-size:19px;text-align:left;vertical-align:top">
-                                <p style="margin-bottom:0px"> - Kondisi barang dalam keadaan baik dan utuh</p>
-                                <p style="margin-bottom:0px"> - Gembok atau segel terpasang dengan baik</p>
-                            </td>
-                            <td rowspan="2" style="vertical-align:top;text-align:right">
-                                <svg id="barcode"></svg>
-                                <script>
-                                    JsBarcode("#barcode", "<?= $ba_detail['id_ba']; ?>", {
-                                        lineColor: "#000",
-                                        width: 1.2,
-                                        height: 50,
-                                        displayValue: false
-                                    });
-                                </script>
-                            </td>
-                        </tr>
-                    </table>
-                    <br>
-                    <table width="85%" class="mx-auto" style="border:2px solid black;color:black;font-family:Times New Roman;font-size:16px;text-align:center">
-                        <tr>
-                            <td style="font-weight:bold">
-                                Jl. Sungai Raya Dalam Komp. Bumi Batara 1 No. A 52 HP./Telp.:081350399700/0561-580985
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:bold">
-                                E-mail : trans.borneo@yahoo.co.id
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:bold">
-                                Pontianak - West Borneo
-                            </td>
-                        </tr>
-                    </table>
+                        <table width="95%" class="mx-auto" style="border:2px solid black;color:black;font-family:Times New Roman;font-size:16px;text-align:center">
+                            <tr>
+                                <td style="font-weight:bold">
+                                    Jl. Sungai Raya Dalam Komp. Bumi Batara 1 No. A 52 HP./Telp.:081350399700/0561-580985
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold">
+                                    E-mail : trans.borneo@yahoo.co.id
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold">
+                                    Pontianak - West Borneo
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
 
                 </div>
             </div>

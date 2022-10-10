@@ -17,7 +17,7 @@ window.onload = function() {
                 },
                 jsPDF: {
                     unit: 'in',
-                    format: 'a4',
+                    format: 'letter',
                     orientation: 'portrait'
                 }
             };

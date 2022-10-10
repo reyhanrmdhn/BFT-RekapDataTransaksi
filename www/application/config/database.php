@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	// 'hostname' => '192.168.1.32:3306',
+	// 'hostname' => '192.168.1.40:3306',
 	// 'username' => 'borneoft',
 	// 'password' => 'Borneoft12@',
-	// 'database' => 'bft_rekapdata',
+	// 'database' => 'bft_rekapdata_fix',
 	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => 'root',

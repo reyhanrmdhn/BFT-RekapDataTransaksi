@@ -7,10 +7,12 @@ class Rekap_model extends CI_Model
     {
         $tglawal = strtotime($awal);
         $tglakhir = strtotime($akhir);
+        $tglakhir2 = (string)strtotime("+1 days", $tglakhir);
+
         $this->db->select('*');
         $this->db->from('invoice');
         $this->db->where('tanggal_invoice >', $tglawal);
-        $this->db->where('tanggal_invoice <', $tglakhir);
+        $this->db->where('tanggal_invoice <=', $tglakhir2);
         $this->db->order_by('tanggal_invoice', 'ASC');
         return $this->db->get()->result_array();
     }

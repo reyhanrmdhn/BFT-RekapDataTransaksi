@@ -369,7 +369,7 @@ class User extends CI_Controller
                 // commodity
                 $commodity[$x] = '-';
                 // grand total
-                $grand_total[$x] = 'Rp. ' . number_format($r['grand_total']);
+                $grand_total[$x] = $r['grand_total'];
                 // tanggal invoice
                 $tanggal_invoice[$x] = date('d-M-Y', $r['tanggal_invoice']);
                 // status
@@ -424,7 +424,7 @@ class User extends CI_Controller
                 $queryLayanan = $this->m_rekap->get_layanan($r['id_layanan']);
                 $layanan[$x] = $queryLayanan['layanan'];
                 // grand total
-                $grand_total[$x] = 'Rp. ' . number_format($r['grand_total']);
+                $grand_total[$x] = $r['grand_total'];
                 // tanggal invoice
                 $tanggal_invoice[$x] = date('d-M-Y', $r['tanggal_invoice']);
                 // status
@@ -465,7 +465,7 @@ class User extends CI_Controller
                 $queryLayanan = $this->m_rekap->get_layanan($r['id_layanan']);
                 $layanan[$x] = $queryLayanan['layanan'];
                 // grand total
-                $grand_total[$x] = 'Rp. ' . number_format($r['grand_total']);
+                $grand_total[$x] = $r['grand_total'];
                 // tanggal invoice
                 $tanggal_invoice[$x] = date('d-M-Y', $r['tanggal_invoice']);
                 // status
@@ -644,6 +644,12 @@ class User extends CI_Controller
                 ->setCellValue('M' . $index, $port_of_loading[$i])
                 ->setCellValue('N' . $index, $port_of_destination[$i])
                 ->setCellValue('O' . $index, $status[$i]);
+
+            $spreadsheet->getActiveSheet()
+                ->getStyle('K' . $index)
+                ->getNumberFormat()
+                ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+
             $no++;
             $index++;
         }

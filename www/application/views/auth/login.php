@@ -26,7 +26,7 @@
                 <?= $this->session->flashdata('message'); ?>
                 <div class="form-group">
                     <label for="">E-mail</label>
-                    <input class="form-control" placeholder="Enter your username" type="email" name="email" required>
+                    <input class="form-control" placeholder="Enter your username" type="email" name="email" value="<?= $this->session->flashdata('email'); ?>" required>
                     <div class="pre-icon os-icon os-icon-email-2-at"></div>
                 </div>
                 <div class="form-group">

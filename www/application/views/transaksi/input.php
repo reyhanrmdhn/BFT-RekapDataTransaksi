@@ -21,7 +21,7 @@
 <div class="body-content">
     <button class="btn btn-success-soft" onclick="goBack()"><i class="typcn typcn-arrow-back"></i>&nbsp;Back</button>
     <div class="card wizard-content p-4 mt-3">
-        <form id="form" action="<?= base_url('Transaksi/input_berita_acara') ?>" class="validation-wizard wizard-circle m-t-40" method="POST">
+        <form id="form" action="<?= base_url('Transaksi/input_berita_acara') ?>" class=" wizard-circle m-t-40" method="POST">
             <!-- Step 1 -->
             <h6>Identitas Vendor</h6>
             <section>
@@ -87,8 +87,13 @@
                             <select class="form-control custom-select basic-single required lcl_no_container" name="lcl_NoContainer" id="lcl_NoContainer" style="width: 100%; height:36px;">
                             </select>
                         </div>
-                        <br>
-                        <p class="test"></p>
+                    </div>
+                    <div class="col-md-12 fcl" style="display: none;">
+                        <div class="form-group">
+                            <label for=""> Plih Ex Kapal :</label>
+                            <select class="form-control custom-select basic-single required fcl_ex_kapal" name="fcl_ExKapal" id="fcl_ExKapal" style="width: 100%; height:36px;">
+                            </select>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -149,18 +154,31 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="">No. Berita Acara :</label>
-                            <input type="text" class="form-control" name="no_ba" id="no_ba" readonly>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <input type="text" class="form-control" id="ba_no" placeholder="No..">
+                                </div>
+                                <div class="col-lg-1">
+                                    <h3 style="vertical-align:middle;margin-top:5px;text-align:center">/</h3>
+                                </div>
+                                <div class="col-lg-3">
+                                    <select id="ba_midle" class="form-control">
+                                        <option value="BA-BFT">BA-BFT</option>
+                                        <option value="INB">INB</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-1">
+                                    <h3 style="vertical-align:middle;margin-top:5px;text-align:center">/</h3>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input type="text" id="ba_date" class="form-control ba-date" readonly>
+                                </div>
+                            </div>
+                            <input type="text" name="no_ba" id="no_ba">
                             <p class="validate_ba"></p>
-                            <input type="hidden" id="auto_ba">
-                        </div>
-                    </div>
-                    <div class="col-md-1">
-                        <label for="">&nbsp;</label>
-                        <div class="form-check mt-2">
-                            <label class="form-check-label"><input class="form-check-input" type="checkbox" id="custom_no_ba">Custom</label>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -182,8 +200,10 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="">No. Container :</label>
+                            <label for=""><b class="text-danger" style="font-size:18px">*</b>No. Container :</label>
                             <input type="text" class="form-control required" name="no_container" id="no_container" placeholder="Ketik Disini...">
+                            <span class="text-danger" style="display:none" id="warning_NoContainer">No Container Sudah Diinputkan!</span>
+                            <span class="text-success" style="display:none" id="success_NoContainer">No Container Tersedia!</span>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -194,20 +214,20 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="">Ex Kapal :</label>
+                            <label for=""><b class="text-danger" style="font-size:18px">*</b>Ex Kapal :</label>
                             <input type="text" class="form-control required" name="ex_kapal" id="ex_kapal" placeholder="Ketik Disini...">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="">Voyager :</label>
+                            <label for=""><b class="text-danger" style="font-size:18px">*</b>Voyager :</label>
                             <input type="text" class="form-control required" name="voyager" id="voyager" placeholder="Ketik Disini...">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">Tanggal Sandar :</label>
-                            <input type="date" class="form-control required" name="tgl_sandar">
+                            <input type="date" class="form-control required" id="tgl_sandar" name="tgl_sandar">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -224,6 +244,7 @@
                         <div class="form-check">
                             <label class="form-check-label"><input class="form-check-input" type="checkbox" id="sesuai_data_pelanggan">Sesuai Alamat Pelanggan</label>
                         </div>
+                        <b class="text-danger" style="font-size:18px">*</b> <span class="text-danger">Pastikan Anda Mengisi Dengan Benar</span>
                     </div>
                 </div>
             </section>

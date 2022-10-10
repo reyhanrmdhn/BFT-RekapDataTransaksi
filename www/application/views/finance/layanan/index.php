@@ -30,7 +30,7 @@
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <?php foreach ($data_layanan as $layanan) :  ?>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="pill" href="#pills-<?= $layanan['id_layanan'] ?>" role="tab" aria-controls="pills-<?= $layanan['id_layanan'] ?>" aria-selected="true"><?= $layanan['layanan']; ?></a>
+                        <a class="nav-link" style="border-bottom: 0px" data-toggle="pill" href="#pills-<?= $layanan['id_layanan'] ?>" role="tab" aria-controls="pills-<?= $layanan['id_layanan'] ?>" aria-selected="true"><?= $layanan['layanan']; ?></a>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -44,7 +44,7 @@
                             </div>
                             <div class="text-right">
                                 <div class="actions">
-                                    <button class="btn btn-success" data-toggle="modal" data-target="#addCustomRate<?= $layanan['id_layanan'] ?>">
+                                    <button class="btn btn-success" data-toggle="modal" data-target="#addCustomRateModal<?= $layanan['id_layanan'] ?>">
                                         <i class="ti ti-write" style="font-size: 15px;"></i>&nbsp; Tambah Custom Rate
                                     </button>
                                 </div>
@@ -64,41 +64,22 @@
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $this->db->select('*');
-                                        $this->db->from('layanan_join');
-                                        $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
-                                        $this->db->join('vendor', 'vendor.id_vendor = layanan_join.id_vendor');
-                                        $this->db->where('layanan_join.id_layanan', $layanan['id_layanan']);
-                                        $this->db->order_by('layanan_join.id_vendor', 'DESC');
-                                        $this->db->order_by('layanan_join.id_layanan_join', 'ASC');
-                                        $layanan_join = $this->db->get()->result_array();
-                                        ?>
-                                        <?php
                                         $x = 1;
                                         $y = 0;
                                         $layananArr = [];
+                                        $layanan_join = $this->m_global->viewDataLayanan($layanan['id_layanan']);
                                         ?>
                                         <?php foreach ($layanan_join as $lj) : ?>
                                             <!-- Data tabel muncul di semua tabel secara dinamis -->
                                             <?php
                                             // query menampilkan jumlah custom rate dari layanan dan vendor yang sama
-                                            $this->db->select('*');
-                                            $this->db->from('layanan_join');
-                                            $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
-                                            $this->db->join('vendor', 'vendor.id_vendor = layanan_join.id_vendor');
-                                            $this->db->join('pelanggan', 'pelanggan.id_pelanggan = layanan_join.id_pelanggan');
-                                            $this->db->where('layanan_join.id_layanan', $lj['id_layanan']);
-                                            $this->db->where('layanan_join.id_vendor', $lj['id_vendor']);
-                                            $this->db->where('layanan_join.is_deleted', '0');
-                                            $layanan_join_num = $this->db->get()->num_rows();
-                                            ?>
-                                            <?php
+                                            $layanan_join_num = $this->m_global->viewCustomRateNum($lj['id_layanan'], $lj['id_vendor']);
                                             $layananArr[$y] = $lj['id_vendor'];
                                             if ($y == 0) { ?>
                                                 <tr>
                                                     <td style="width:5%"><?= $x; ?></td>
                                                     <td style="text-align:left"><?= $lj['nama_vendor']; ?></td>
-                                                    <td><?= $layanan_join_num; ?> Pelanggan</td>
+                                                    <td><?= $layanan_join_num; ?> Custom Rate</td>
                                                     <td>
                                                         <button class="btn btn-info-soft" onclick="location.href='<?= base_url('Finance/layanan/' . $lj['id_vendor'] . '/' . $lj['id_layanan']) ?>'"><i class="ti ti-eye"></i></button>
                                                     </td>
@@ -112,7 +93,7 @@
                                                         <tr>
                                                             <td style="width:5%"><?= $x; ?></td>
                                                             <td style="text-align:left"><?= $lj['nama_vendor']; ?></td>
-                                                            <td><?= $layanan_join_num; ?> Pelanggan</td>
+                                                            <td><?= $layanan_join_num; ?> Custom Rate</td>
                                                             <td>
                                                                 <button class="btn btn-info-soft" onclick="location.href='<?= base_url('Finance/layanan/' . $lj['id_vendor'] . '/' . $lj['id_layanan']) ?>'"><i class="ti ti-eye"></i></button>
                                                             </td>
@@ -213,7 +194,7 @@
                             </div>
                             <div class="col-sm-1 ml-0">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-warning-soft btn-edit-active<?= $l['id_layanan'] ?>"><i class="ti ti-pencil" style="font-size: 18px"></i></button>
+                                    <button type="button" class="btn btn-warning-soft   <?= $l['id_layanan'] ?>"><i class="ti ti-pencil" style="font-size: 18px"></i></button>
                                     <button type="button" class="btn btn-danger btn-edit-disable<?= $l['id_layanan'] ?>" style="display: none;font-size: 15px"><i class="ti ti-na"></i></button>
                                 </div>
                             </div>
@@ -256,8 +237,8 @@
     </div>
     <div class="md-overlay"></div>
 
-    <div class="modal fade" id="addCustomRate<?= $data['id_layanan'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal fade" id="addCustomRateModal<?= $data['id_layanan'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title font-weight-600" style="margin-left:auto">Tambah Custom Rate</h5>
@@ -265,39 +246,109 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form action="<?= base_url('Finance/add_customRate') ?>" method="POST" id="add_customLayanan">
-                        <div class="form-group">
-                            <label for="">Layanan</label>
-                            <input class="form-control" type="text" value="<?= $data['layanan'] ?>" readonly>
-                            <input type="hidden" name="id_layanan" value="<?= $data['id_layanan'] ?>" id="id_layanan<?= $data['id_layanan'] ?>">
+                <form action="<?= base_url('Finance/add_customRate') ?>" method="POST">
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- Layanan -->
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="">Layanan</label>
+                                    <input class="form-control" type="text" value="<?= $data['layanan'] ?>" readonly>
+                                    <input type="hidden" name="id_layanan" value="<?= $data['id_layanan'] ?>" id="id_layanan<?= $data['id_layanan'] ?>">
+                                </div>
+                            </div>
+                            <!-- Tipe -->
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="">Tipe</label>
+                                    <select class="form-control basic-single" name="tipe_layanan" id="select_tipe_layanan<?= $data['id_layanan'] ?>" required>
+                                        <option value="">Select</option>
+                                        <option value="fcl">FCL</option>
+                                        <option value="lcl">LCL</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="">Vendor</label>
-                            <select class="form-control basic-single required" name="id_vendor" id="select_vendor<?= $data['id_layanan'] ?>">
-                                <option value="">Select</option>
-                                <?php foreach ($data_vendor as $v) : ?>
-                                    <option value="<?= $v['id_vendor'] ?>"><?= $v['nama_vendor']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Pelanggan</label>
-                            <select class="form-control basic-single required" name="id_pelanggan" id="select_pelanggan<?= $data['id_layanan'] ?>">
-                                <option value="">Select</option>
-                            </select>
+                        <div class="row">
+                            <!-- Vendor -->
+                            <div class="col-lg-6">
+                                <div class="form-group formVendor" style="display: none">
+                                    <label for="">Vendor</label>
+                                    <select class="form-control basic-single" name="id_vendor" id="select_vendor<?= $data['id_layanan'] ?>" required>
+                                        <option value="">Select</option>
+                                        <?php foreach ($data_vendor as $v) : ?>
+                                            <option value="<?= $v['id_vendor'] ?>"><?= $v['nama_vendor']; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- pelanggan -->
+                            <div class="col-lg-6">
+                                <!-- FCL -->
+                                <div class="form-group formPelangganFCL" style="display: none">
+                                    <label for="">Pelanggan</label>
+                                    <select class="form-control basic-single" name="id_pelanggan" id="select_pelangganFCL<?= $data['id_layanan'] ?>">
+                                        <option value="">Select</option>
+                                        <?php foreach ($data_pelanggan as $p) : ?>
+                                            <option value="<?= $p['id_pelanggan'] ?>"><?= $p['nama_pelanggan']; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <!-- LCL -->
+                                <div class="form-group formPelangganLCL" style="display: none">
+                                    <label for="">Pelanggan</label>
+                                    <select class="form-control basic-multiple" multiple="multiple" name="id_pelanggan[]" id="select_pelangganLCL<?= $data['id_layanan'] ?>">
+                                        <?php foreach ($data_pelanggan as $p) : ?>
+                                            <option value="<?= $p['id_pelanggan'] ?>"><?= $p['nama_pelanggan']; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="">Rate (IDR)</label>
-                            <input class="form-control number" placeholder="Masukkan Harga" name="rate">
+                        <div class="row">
+                            <!-- ukuran -->
+                            <div class="col-lg-6">
+                                <div class="form-group formUkuran" style="display: none">
+                                    <label for="">Ukuran</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="size" id="size<?= $data['id_layanan'] ?>" placeholder="Ketik Disini..." required>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Feet</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- rate -->
+                            <div class="col-lg-6">
+                                <div class="form-group formRate" style="display: none">
+                                    <label for="">Rate (IDR)</label>
+                                    <input class="form-control number" placeholder="Masukkan Harga" name="rate" id="rate<?= $data['id_layanan'] ?>" required>
+                                </div>
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-success">Tambah Layanan</button>
+
+                        <!-- warning -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group warningDiv" style="display: none">
+                                    <span class="CrosscheckWarning">test</span>
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                </div>
+
+                        <!-- keterangan -->
+                        <div class="form-group formKeterangan" style="display: none">
+                            <label for="">Keterangan</label>
+                            <textarea class="form-control" name="keterangan" id="keterangan<?= $data['id_layanan'] ?>" rows="3" placeholder="Ketik Disini..."></textarea>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success addCustomRate">Tambah Layanan</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

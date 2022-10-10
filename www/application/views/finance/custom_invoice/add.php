@@ -100,7 +100,7 @@ function terbilang($nilai)
                                         <th style="text-align:left;width:30%">Invoice No</th>
                                         <th style="width:10%;text-align:center"> : </th>
                                         <th style="text-align:left">
-                                            <input type="text" name="no_invoice" class="no_invoice form-control">
+                                            <input type="text" name="no_invoice" class="no_invoice_custom form-control">
                                         </th>
                                     </tr>
                                     <tr>
@@ -193,7 +193,7 @@ function terbilang($nilai)
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Tgl. Bongkar</th>
+                                        <th>Tgl. Pengerjaan</th>
                                         <td style="text-align:center">:</td>
                                         <td>
                                             <input type="date" class="form-control" name="tgl_bongkar" id="tgl_bongkar">

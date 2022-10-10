@@ -231,8 +231,9 @@ class Global_model extends CI_Model
         $this->db->select('*');
         $this->db->from('invoice');
         $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
-        $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice.id_pelanggan');
-        $this->db->where('invoice.id_ba !=', '');
+        // $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice.id_pelanggan');
+        // $this->db->where('invoice.id_ba !=', '');
+        $this->db->where('invoice.tipe_inv !=', 3);
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -243,9 +244,37 @@ class Global_model extends CI_Model
         $this->db->from('invoice');
         $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
         $this->db->join('layanan', 'layanan.id_layanan = invoice.id_layanan');
-        $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice.id_pelanggan');
+        // $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice.id_pelanggan');
         $this->db->join('user', 'user.id = invoice.id_user');
         $this->db->where('invoice.id_invoice', $id);
+        $query = $this->db->get();
+        return $query;
+    }
+    function get_invoice_rembes_detail($id)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice');
+        $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
+        $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice.id_pelanggan');
+        $this->db->join('user', 'user.id = invoice.id_user');
+        // $this->db->join('invoice_rembes', 'invoice_rembes.id_invoice = invoice.id_invoice');
+        $this->db->where('invoice.id_invoice', $id);
+        $query = $this->db->get();
+        return $query;
+    }
+    function get_keterangan_rembes($id)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice_rembes_keterangan');
+        $this->db->where('id_invoice', $id);
+        $query = $this->db->get();
+        return $query;
+    }
+    function get_deskripsi_rembes($id)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice_rembes');
+        $this->db->where('id_invoice', $id);
         $query = $this->db->get();
         return $query;
     }
@@ -437,7 +466,7 @@ class Global_model extends CI_Model
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 0);
         $this->db->where('invoice.is_payed', 0);
-        $this->db->where('invoice.id_ba !=', '');
+        $this->db->where('invoice.tipe_inv !=', 3);
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -461,7 +490,7 @@ class Global_model extends CI_Model
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 1);
         $this->db->where('invoice.is_payed', 0);
-        $this->db->where('invoice.id_ba !=', '');
+        $this->db->where('invoice.tipe_inv !=', 3);
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -485,7 +514,7 @@ class Global_model extends CI_Model
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 1);
         $this->db->where('invoice.is_payed', 1);
-        $this->db->where('invoice.id_ba !=', '');
+        $this->db->where('invoice.tipe_inv !=', 3);
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -509,6 +538,7 @@ class Global_model extends CI_Model
         $this->db->from('invoice');
         $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
         $this->db->where('invoice.id_ba', '');
+        $this->db->where('invoice.tipe_inv', 3);
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get()->result_array();
         return $query;
@@ -557,6 +587,7 @@ class Global_model extends CI_Model
         $this->db->from('invoice');
         $this->db->join('vendor', 'vendor.id_vendor = invoice.id_vendor');
         $this->db->where('invoice.id_ba', '');
+        $this->db->where('invoice.tipe_inv', 3);
         $query = $this->db->get();
         return $query;
     }
@@ -569,6 +600,7 @@ class Global_model extends CI_Model
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 0);
         $this->db->where('invoice.is_payed', 0);
+        $this->db->where('invoice.tipe_inv', 3);
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -582,6 +614,8 @@ class Global_model extends CI_Model
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 1);
         $this->db->where('invoice.is_payed', 0);
+        $this->db->where('invoice.is_payed', 0);
+        $this->db->where('invoice.tipe_inv', 3);
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -595,6 +629,7 @@ class Global_model extends CI_Model
         $this->db->where('invoice.is_fix', 1);
         $this->db->where('invoice.is_scanned', 1);
         $this->db->where('invoice.is_payed', 1);
+        $this->db->where('invoice.tipe_inv', 3);
         $this->db->order_by('invoice.tanggal_invoice', 'DESC');
         $query = $this->db->get();
         return $query;
@@ -633,29 +668,64 @@ class Global_model extends CI_Model
         $query = $this->db->get()->row_array();
         return $query;
     }
+    function get_ratePelanggan($id_vendor, $id_layanan)
+    {
+        $this->db->select('*');
+        $this->db->from('layanan_join');
+        $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
+        $this->db->where('layanan_join.id_vendor', $id_vendor);
+        $this->db->where('layanan_join.id_layanan', $id_layanan);
+        $this->db->where('layanan_join.layanan_join_is_deleted', 0);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+    function get_rateInvoice($id_vendor, $id_layanan, $id_pelanggan, $size)
+    {
+        $this->db->select('*');
+        $this->db->from('layanan_join');
+        $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
+        $this->db->where('layanan_join.id_vendor', $id_vendor);
+        $this->db->where('layanan_join.id_layanan', $id_layanan);
+        $this->db->where('layanan_join.id_pelanggan', $id_pelanggan);
+        $this->db->where('layanan_join.size', $size);
+        $this->db->where('layanan_join.layanan_join_is_deleted', 0);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+
     function get_descriptionRate($id_invoice, $id_pelanggan)
     {
         $this->db->select('*');
         $this->db->from('invoice_rate');
         $this->db->join('invoice', 'invoice.id_invoice = invoice_rate.id_invoice');
-        $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice_rate.id_pelanggan');
+        // $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice_rate.id_pelanggan');
         $this->db->where('invoice_rate.id_invoice', $id_invoice);
         $this->db->where('invoice_rate.id_pelanggan', $id_pelanggan);
         $query = $this->db->get()->row_array();
         return $query;
     }
+    function get_descriptionRate_rembes($id_invoice)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice_rate');
+        $this->db->join('invoice', 'invoice.id_invoice = invoice_rate.id_invoice');
+        $this->db->where('invoice_rate.id_invoice', $id_invoice);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
 
-    function crosscheck_inputCustomRate($id_vendor, $id_pelanggan, $id_layanan)
+    function crosscheckLayanan_model($id_vendor, $id_pelanggan, $id_layanan, $size)
     {
         $this->db->select('*');
         $this->db->from('layanan_join');
         $this->db->join('vendor', 'layanan_join.id_vendor = vendor.id_vendor');
-        $this->db->join('pelanggan', 'layanan_join.id_pelanggan = pelanggan.id_pelanggan');
+        // $this->db->join('pelanggan', 'layanan_join.id_pelanggan = pelanggan.id_pelanggan');
         $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
         $this->db->where('layanan_join.id_vendor', $id_vendor);
         $this->db->where('layanan_join.id_pelanggan', $id_pelanggan);
         $this->db->where('layanan_join.id_layanan', $id_layanan);
-        $query = $this->db->get()->num_rows();
+        $this->db->where('layanan_join.size', $size);
+        $query = $this->db->get()->row_array();
         return $query;
     }
     function get_customRate($id_vendor, $id_layanan)
@@ -663,11 +733,10 @@ class Global_model extends CI_Model
         $this->db->select('*');
         $this->db->from('layanan_join');
         $this->db->join('vendor', 'layanan_join.id_vendor = vendor.id_vendor');
-        $this->db->join('pelanggan', 'layanan_join.id_pelanggan = pelanggan.id_pelanggan');
         $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
         $this->db->where('layanan_join.id_vendor', $id_vendor);
         $this->db->where('layanan_join.id_layanan', $id_layanan);
-        $this->db->where('layanan_join.is_deleted', '0');
+        $this->db->where('layanan_join.layanan_join_is_deleted', '0');
         $query = $this->db->get()->result_array();
         return $query;
     }
@@ -681,6 +750,17 @@ class Global_model extends CI_Model
         $query = $this->db->get()->result_array();
         return $query;
     }
+    function get_ex_kapal($id_vendor, $tipe_ba)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara');
+        $this->db->where('id_vendor', $id_vendor);
+        $this->db->where('tipe_ba', $tipe_ba);
+        $this->db->where('invoice_done', 0);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+
     function get_pelanggan_LCL_model($id_vendor, $no_container)
     {
         $this->db->select('*');
@@ -688,7 +768,21 @@ class Global_model extends CI_Model
         $this->db->join('pelanggan', 'berita_acara.id_pelanggan = pelanggan.id_pelanggan');
         $this->db->where('berita_acara.id_vendor', $id_vendor);
         $this->db->where('berita_acara.no_container', $no_container);
+        $this->db->where('berita_acara.tipe_ba', 'lcl');
         $query = $this->db->get()->result_array();
+        return $query;
+    }
+    function get_pelanggan_FCL_model($id_vendor, $ex_kapal, $voyager)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara');
+        $this->db->join('vendor', 'berita_acara.id_vendor = vendor.id_vendor');
+        $this->db->where('berita_acara.id_vendor', $id_vendor);
+        $this->db->where('berita_acara.ex_kapal', $ex_kapal);
+        $this->db->where('berita_acara.voyager', $voyager);
+        $this->db->where('berita_acara.tipe_ba', 'fcl');
+        $this->db->where('berita_acara.invoice_done', 0);
+        $query = $this->db->get()->row_array();
         return $query;
     }
     function ba_lcl($id_vendor, $no_container)
@@ -698,6 +792,17 @@ class Global_model extends CI_Model
         $this->db->join('pelanggan', 'berita_acara.id_pelanggan = pelanggan.id_pelanggan');
         $this->db->where('berita_acara.id_vendor', $id_vendor);
         $this->db->where('berita_acara.no_container', $no_container);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+    function ba_fcl($id_vendor, $ex_kapal, $voyager)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara');
+        $this->db->join('pelanggan', 'berita_acara.id_pelanggan = pelanggan.id_pelanggan');
+        $this->db->where('berita_acara.id_vendor', $id_vendor);
+        $this->db->where('berita_acara.ex_kapal', $ex_kapal);
+        $this->db->where('berita_acara.voyager', $voyager);
         $query = $this->db->get()->row_array();
         return $query;
     }
@@ -734,6 +839,86 @@ class Global_model extends CI_Model
         $this->db->join('invoice', 'invoice.id_invoice = invoice_addons.id_invoice');
         $this->db->where('invoice_addons.id_invoice', $id_invoice);
         $query = $this->db->get();
+        return $query;
+    }
+    public function viewDataLayanan($id_layanan)
+    {
+        $this->db->select('*');
+        $this->db->from('layanan_join');
+        $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
+        $this->db->join('vendor', 'vendor.id_vendor = layanan_join.id_vendor');
+        $this->db->where('layanan_join.id_layanan', $id_layanan);
+        $this->db->order_by('layanan_join.id_vendor', 'DESC');
+        $this->db->order_by('layanan_join.id_layanan_join', 'ASC');
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+    public function viewCustomRateNum($id_layanan, $id_vendor)
+    {
+        $this->db->select('*');
+        $this->db->from('layanan_join');
+        $this->db->join('layanan', 'layanan.id_layanan = layanan_join.id_layanan');
+        $this->db->join('vendor', 'vendor.id_vendor = layanan_join.id_vendor');
+        $this->db->where('layanan_join.id_layanan', $id_layanan);
+        $this->db->where('layanan_join.id_vendor', $id_vendor);
+        $this->db->where('layanan_join.layanan_join_is_deleted', '0');
+        $query = $this->db->get()->num_rows();
+        return $query;
+    }
+
+    public function get_keterangan($id_invoice, $id_pelanggan)
+    {
+        $this->db->select('*');
+        $this->db->from('invoice_lcl_keterangan');
+        // $this->db->join('invoice', 'invoice.id_invoice = invoice_lcl_keterangan.id_invoice');
+        // $this->db->join('pelanggan', 'pelanggan.id_pelanggan = invoice_lcl_keterangan.id_pelanggan');
+        $this->db->where('invoice_lcl_keterangan.id_invoice', $id_invoice);
+        $this->db->where('invoice_lcl_keterangan.id_pelanggan', $id_pelanggan);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+
+    public function checkNoContainerModel($id_vendor, $no_container, $ex_kapal, $voyager)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara');
+        $this->db->join('vendor', 'vendor.id_vendor = berita_acara.id_vendor');
+        $this->db->where('berita_acara.id_vendor', $id_vendor);
+        $this->db->where('berita_acara.no_container', $no_container);
+        $this->db->where('berita_acara.ex_kapal', $ex_kapal);
+        $this->db->where('berita_acara.voyager', $voyager);
+        $this->db->where('berita_acara.invoice_done', 0);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+
+    public function get_ba_join($id)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara_edited');
+        $this->db->join('berita_acara', 'berita_acara.id_ba = berita_acara_edited.id_ba');
+        $this->db->join('pelanggan', 'pelanggan.id_pelanggan = berita_acara_edited.id_pelanggan_edited');
+        $this->db->join('vendor', 'vendor.id_vendor = berita_acara_edited.id_vendor_edited');
+        $this->db->join('user', 'user.id = berita_acara_edited.id_user_edited');
+        $this->db->join('layanan', 'layanan.id_layanan = berita_acara_edited.id_layanan_edited');
+        $this->db->where('berita_acara_edited.id_ba', $id);
+        $this->db->order_by('berita_acara_edited.tanggal_edited', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+    public function get_ba_join_edit($id)
+    {
+        $this->db->select('*');
+        $this->db->from('berita_acara_edited');
+        $this->db->join('berita_acara', 'berita_acara.id_ba = berita_acara_edited.id_ba');
+        $this->db->join('pelanggan', 'pelanggan.id_pelanggan = berita_acara_edited.id_pelanggan_edited');
+        $this->db->join('vendor', 'vendor.id_vendor = berita_acara_edited.id_vendor_edited');
+        $this->db->join('user', 'user.id = berita_acara_edited.id_user_edited');
+        $this->db->join('layanan', 'layanan.id_layanan = berita_acara_edited.id_layanan_edited');
+        $this->db->where('berita_acara_edited.id_ba', $id);
+        $this->db->order_by('berita_acara_edited.tanggal_edited', 'ASC');
+        $query = $this->db->get()->result_array();
         return $query;
     }
 }

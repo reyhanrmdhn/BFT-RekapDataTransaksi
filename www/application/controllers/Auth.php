@@ -55,6 +55,7 @@ class Auth extends CI_Controller
                 $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">
                 Password salah!
                 </div>');
+                $this->session->set_flashdata('email', $email);
                 redirect('auth');
             }
         } else { //belum registrasi
